@@ -1,0 +1,28 @@
+{
+  "name": "karuta-server",
+  "version": "0.0.1",
+  "description": "Karuta Server (Node.js)",
+  "main": "app.js",
+  "scripts": {
+	"run": "node app.js",
+    "test": "node test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/takashiro/karuta-node-server.git"
+  },
+  "keywords": [
+    "karuta",
+	"game",
+	"server"
+  ],
+  "author": "Kazuichi Takashiro",
+  "license": "AGPL-3.0",
+  "bugs": {
+    "url": "https://github.com/takashiro/karuta-node-server/issues"
+  },
+  "homepage": "https://github.com/takashiro/karuta-node-server#readme",
+  "dependencies": {
+    "ws": "^4.0.0"
+  }
+}
