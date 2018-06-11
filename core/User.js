@@ -98,6 +98,10 @@ class User extends EventEmitter {
 			this.socket.on('close', (code, reason) => {
 				this.emit('close', code, reason);
 			});
+
+			this.socket.on('error', error => {
+				this.emit('close', error.code, error.message);
+			});
 		}
 	}
 }
