@@ -33,10 +33,11 @@ class Packet {
 	 * @return {string} JSON string representation
 	 */
 	toJSON() {
-		return JSON.stringify([
-			this.command,
-			this.arguments,
-		]);
+		let json = [this.command];
+		if (this.arguments !== undefined && this.arguments !== null) {
+			json.push(this.arguments);
+		}
+		return JSON.stringify(json);
 	}
 
 }
