@@ -12,8 +12,9 @@ act.set(net.CheckVersion, function () {
 });
 
 //Login
-act.set(net.Login, function ({account, password}) {
+act.set(net.Login, function () {
 	//TO-DO
+	this.send(net.Login, this.id);
 });
 
 //Logout
@@ -44,6 +45,7 @@ act.set(net.EnterRoom, function (id) {
 	let room = server.findRoom(id);
 	if (room) {
 		room.addUser(this);
+		this.send(net.EnterRoom, id);
 	} else {
 		this.send(net.EnterRoom);
 	}
@@ -89,28 +91,6 @@ act.set(net.LoadGame, function (driver) {
 	}
 
 	room.loadExtension(driver);
-});
-
-//Notify
-act.set(net.Notify, function ({cmd, arg}) {
-	let room = this.room;
-	if (!room || !room.driver) {
-		return;
-	}
-
-	let actions = room.driver.actions;
-	if (!actions) {
-		return;
-	}
-
-	try {
-		let action = actions.get(cmd);
-		if (action) {
-			action.call(this, arg);
-		}
-	} catch (error) {
-		console.log(error.stack);
-	}
 });
 
 module.exports = act;

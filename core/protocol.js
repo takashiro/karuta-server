@@ -17,13 +17,9 @@ const net = {
 	RemoveUser: 0xA,
 
 	Speak: 0xB,
-
 	LoadGame: 0xC,
-	Notify: 0xD,
-	Request: 0xE,
-	Reply: 0xF,
 
-	NetworkCommandCount: 0x10,
+	NetworkCommandCount: 0xD,
 };
 
 module.exports = net;

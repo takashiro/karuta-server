@@ -37,7 +37,7 @@ class User extends EventEmitter {
 	/**
 	 * Send a command to the client
 	 * @param {number} command
-	 * @param {object} arguments
+	 * @param {object} args
 	 * @return {boolean} true iff. the command was sent
 	 */
 	send(command, args = null) {
@@ -47,24 +47,10 @@ class User extends EventEmitter {
 
 		let packet = new Packet;
 		packet.command = command;
-		if (args) {
-			packet.arguments = args;
-		}
+		packet.arguments = args;
 
 		this.socket.send(packet.toJSON());
 		return true;
-	}
-
-	/**
-	 * Send a notification to the client
-	 * @param {number} command
-	 * @param {object} args
-	 */
-	notify(command, args) {
-		this.send(net.Notify, {
-			cmd: command,
-			arg: args,
-		});
 	}
 
 	/**

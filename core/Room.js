@@ -73,18 +73,6 @@ class Room extends EventEmitter {
 	}
 
 	/**
-	 * Broadcast a notification to all users in this room
-	 * @param {number} command
-	 * @param {object} args
-	 */
-	broadcastNotification(command, args) {
-		this.broadcast(net.Notify, {
-			cmd: command,
-			arg: args,
-		});
-	}
-
-	/**
 	 * Getter of room configuration
 	 */
 	getConfig() {
