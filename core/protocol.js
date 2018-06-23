@@ -20,8 +20,6 @@ const net = new Enum(
 
 	'Speak',
 	'LoadGame',
-
-	'CommandCount',
 );
 
 module.exports = net;
