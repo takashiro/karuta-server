@@ -1,7 +1,6 @@
 
 const EventEmitter = require('events');
 const Packet = require('./Packet');
-const net = require('./protocol');
 
 class User extends EventEmitter {
 
@@ -15,6 +14,8 @@ class User extends EventEmitter {
 		this.id = 0;
 		this.server = null;
 		this.setSocket(socket);
+
+		this.onmessage = new Map;
 	}
 
 	/**
@@ -54,6 +55,80 @@ class User extends EventEmitter {
 	}
 
 	/**
+	 * Send a command to the client and return the response
+	 * @param {number} command
+	 * @param {object} args
+	 * @param {number} timeout
+	 * @return {Promise<>} the promise that resolves user response
+	 */
+	request(command, args = null, timeout = 15000) {
+		let reply = new Promise((resolve, reject) => {
+			this.bind(command, resolve);
+			setTimeout(reject, timeout);
+		});
+
+		this.send(command, args);
+		return reply;
+	}
+
+	/**
+	 * Bind a callback to a network command
+	 * @param {number} command
+	 * @param {Function} callback
+	 * @param {object} options
+	 */
+	bind(command, callback, options = null) {
+		if (options && options.once) {
+			callback.once = true;
+		}
+
+		let callbacks = this.onmessage.get(command);
+		if (!callbacks) {
+			callbacks = new Set;
+			this.onmessage.set(command, callbacks);
+		}
+
+		callbacks.add(callback);
+	}
+
+	/**
+	 * Unbind a callback from a network command
+	 * @param {number} command
+	 * @param {Function} callback if it's null, all callback will be cleared
+	 */
+	unbind(command, callback = null) {
+		if (!callback) {
+			this.onmessage.delete(command);
+		} else {
+			let callbacks = this.onmessage.get(command);
+			if (callbacks) {
+				callbacks.delete(callback);
+			}
+		}
+	}
+
+	/**
+	 * Trigger callbacks of a network command
+	 * @param {number} command
+	 * @param {object} args
+	 */
+	trigger(command, args) {
+		let callbacks = this.onmessage.get(command);
+		if (callbacks) {
+			let removed = [];
+			for (let callback of callbacks) {
+				callback.call(this, args);
+				if (callback.once) {
+					removed.push(callback);
+				}
+			}
+			for (let callback of removed) {
+				callbacks.delete(callback);
+			}
+		}
+	}
+
+	/**
 	 * Disconnect the client
 	 */
 	disconnect() {
@@ -78,6 +153,7 @@ class User extends EventEmitter {
 				let packet = new Packet;
 				if (packet.parse(json)) {
 					this.emit('action', packet);
+					this.trigger(packet.command, packet.arguments);
 				}
 			});
 
