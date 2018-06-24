@@ -12,8 +12,11 @@ act.set(net.CheckVersion, function () {
 });
 
 //Login
-act.set(net.Login, function () {
+act.set(net.Login, function (credential) {
 	//TO-DO
+	if (credential) {
+		this.name = credential.name;
+	}
 	this.send(net.Login, this.id);
 });
 
