@@ -73,6 +73,21 @@ class Room extends EventEmitter {
 	}
 
 	/**
+	 * Broadcast a command to all users except one
+	 * @param {User} except
+	 * @param {number} command
+	 * @param {object} args
+	 */
+	broadcastExcept(except, command, args = null) {
+		for (let user of this.users) {
+			if (user === except) {
+				continue;
+			}
+			user.send(command, args);
+		}
+	}
+
+	/**
 	 * Getter of room configuration
 	 */
 	getConfig() {
