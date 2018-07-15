@@ -94,6 +94,7 @@ act.set(net.LoadGame, function (driver) {
 	}
 
 	room.loadExtension(driver);
+	this.send(net.LoadGame);
 });
 
 module.exports = act;

@@ -50,7 +50,11 @@ class User extends EventEmitter {
 		packet.command = command;
 		packet.arguments = args;
 
-		this.socket.send(packet.toJSON());
+		try {
+			this.socket.send(packet.toJSON());
+		} catch (error) {
+			// Write logs
+		}
 		return true;
 	}
 
