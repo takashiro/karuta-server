@@ -54,7 +54,7 @@ class Room extends EventEmitter {
 	 */
 	removeUser(user) {
 		user.room = null;
-		this.users.delete(user.id);
+		this.users.delete(user);
 
 		if (this.users.size <= 0) {
 			this.emit('close');
