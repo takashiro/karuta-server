@@ -20,7 +20,7 @@ class Server {
 		room.id = this.nextRoomId;
 		this.rooms.set(room.id, room);
 
-		room.on('close', () => this.removeRoom(room.id));
+		room.once('close', () => this.removeRoom(room.id));
 	}
 
 	/**
