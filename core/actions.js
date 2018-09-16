@@ -93,8 +93,8 @@ act.set(net.LoadGame, function (driver) {
 		return;
 	}
 
-	room.loadExtension(driver);
-	this.send(net.LoadGame);
+	let loaded = room.loadExtension(driver);
+	this.send(net.LoadGame, loaded ? driver : null);
 });
 
 module.exports = act;
