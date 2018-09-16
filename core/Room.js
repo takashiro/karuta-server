@@ -1,8 +1,5 @@
 
 const EventEmitter = require('events');
-const net = require('./protocol');
-
-let NEXT_ROOM_ID = 0;
 
 class Room extends EventEmitter {
 
