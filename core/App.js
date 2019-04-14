@@ -6,12 +6,12 @@ const defaultConfig = require('../config.default.json');
 
 const Lobby = require('./Lobby');
 const User = require('./User');
-const SystemActions = require('./actions');
+const CommonActions = require('./actions');
 
 async function userListener(packet) {
 	let action = null;
 	if (packet.command < 0) {
-		action = SystemActions.get(packet.command);
+		action = CommonActions.get(packet.command);
 	} else if (packet.command > 0) {
 		const driver = this.room && this.room.driver;
 		const actions = driver && driver.actions;
