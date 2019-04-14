@@ -1,6 +1,7 @@
 
 const EventEmitter = require('events');
 const Packet = require('./Packet');
+const {WebSocket} = require('ws');
 
 class User extends EventEmitter {
 
