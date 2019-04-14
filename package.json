@@ -4,8 +4,8 @@
   "description": "Karuta Server (Node.js)",
   "main": "app.js",
   "scripts": {
-	"run": "node app.js",
-    "test": "node test.js"
+    "run": "node app.js",
+    "test": "eslint . && node test.js"
   },
   "repository": {
     "type": "git",
@@ -13,8 +13,8 @@
   },
   "keywords": [
     "karuta",
-	"game",
-	"server"
+    "game",
+    "server"
   ],
   "author": "Kazuichi Takashiro",
   "license": "AGPL-3.0",
@@ -24,5 +24,8 @@
   "homepage": "https://github.com/takashiro/karuta-node-server#readme",
   "dependencies": {
     "ws": "^4.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^5.16.0"
   }
 }
