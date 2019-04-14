@@ -12,7 +12,7 @@ class Packet {
 	/**
 	 * Parse a packet from JSON string representation
 	 * @param {string} data JSON string representation
-	 * @return {boolean} whether data is a valid packet
+	 * @return {Packet} a valid packet
 	 */
 	static parse(data) {
 		let arg = JSON.parse(data);
