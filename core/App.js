@@ -6,18 +6,25 @@ const defaultConfig = require('../config.default.json');
 
 const Lobby = require('./Lobby');
 const User = require('./User');
-const actions = require('./actions');
+const SystemActions = require('./actions');
 
-function userListener(packet) {
-	let action = actions.get(packet.command);
-
-	if (!action && this.room) {
-		let actions = this.room.driver && this.room.driver.actions;
+async function userListener(packet) {
+	let action = null;
+	if (packet.command < 0) {
+		action = SystemActions.get(packet.command);
+	} else if (packet.command > 0) {
+		const driver = this.room && this.room.driver;
+		const actions = driver && driver.actions;
 		action = actions && actions.get(packet.command);
 	}
 
 	if (action) {
-		action.call(this, packet.arguments);
+		const ret = await action.call(this, packet.arguments);
+		if (ret !== undefined) {
+			this.send(packet.command, ret);
+		}
+	} else {
+		console.error('Undefined command: ' + packet.command);
 	}
 }
 

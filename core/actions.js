@@ -8,7 +8,7 @@ const act = new Map;
 //CheckVersion
 act.set(net.CheckVersion, function () {
 	const version = require('./version.json');
-	this.send(net.CheckVersion, version);
+	return version;
 });
 
 //Login
@@ -17,7 +17,7 @@ act.set(net.Login, function (credential) {
 	if (credential) {
 		this.name = credential.name;
 	}
-	this.send(net.Login, this.id);
+	return this.id;
 });
 
 //Logout
@@ -35,7 +35,7 @@ act.set(net.CreateRoom, function () {
 	let room = new Room(this);
 	lobby.addRoom(room);
 
-	this.send(net.CreateRoom, room.id);
+	return room.id;
 });
 
 //EnterRoom
@@ -48,9 +48,9 @@ act.set(net.EnterRoom, function (id) {
 	let room = lobby.findRoom(id);
 	if (room) {
 		room.addUser(this);
-		this.send(net.EnterRoom, id);
+		return room.id;
 	} else {
-		this.send(net.EnterRoom);
+		return -1;
 	}
 });
 
@@ -94,7 +94,7 @@ act.set(net.LoadGame, function (driver) {
 	}
 
 	let loaded = room.loadExtension(driver);
-	this.send(net.LoadGame, loaded ? driver : null);
+	return loaded ? driver : null;
 });
 
 module.exports = act;
