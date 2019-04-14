@@ -1,29 +1,24 @@
 
-const WebSocket = require('ws');
+const App = require('./core/App');
 
-const karuta = require('./core');
-
-const wss = new WebSocket.Server({
-	port: 2517
-});
-const lobby = new karuta.Lobby;
-
-wss.on('connection', socket => {
-	let user = new karuta.User(socket);
-	user.on('action', packet => {
-		let action = karuta.actions.get(packet.command);
-
-		if (!action && user.room) {
-			let room = user.room;
-			let actions = room.driver && room.driver.actions;
-			if (actions) {
-				action = actions.get(packet.command);
-			}
+// Load configurations
+let config = (function () {
+	let configFile = './config.json';
+	for (let argv of process.argv) {
+		if (argv.startsWith('--config=')) {
+			configFile = argv.substr(9);
 		}
+	}
 
-		if (action) {
-			action.call(user, packet.arguments);
-		}
-	});
-	lobby.addUser(user);
-});
+	try {
+		return require(configFile);
+	} catch (error) {
+		console.log(error);
+	}
+})();
+
+// Start up application
+(async function () {
+	const app = new App(config);
+	await app.start();
+})();

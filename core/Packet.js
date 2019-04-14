@@ -4,7 +4,7 @@ class Packet {
 	/**
 	 * Create a network packet
 	 */
-	constructor(data = null) {
+	constructor() {
 		this.command = 0;
 		this.arguments = null;
 	}
@@ -14,18 +14,16 @@ class Packet {
 	 * @param {string} data JSON string representation
 	 * @return {boolean} whether data is a valid packet
 	 */
-	parse(data) {
-		try {
-			data = JSON.parse(data);
-			if (data instanceof Array) {
-				this.command = data[0];
-				this.arguments = data[1];
-				return true;
-			}
-		} catch (error) {
-			console.log(error);
+	static parse(data) {
+		let arg = JSON.parse(data);
+		if (arg instanceof Array) {
+			let packet = new Packet;
+			packet.command = arg[0];
+			packet.arguments = arg[1];
+			return packet;
+		} else {
+			throw new Error('The packet must be an array.');
 		}
-		return false;
 	}
 
 	/**
