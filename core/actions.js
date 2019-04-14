@@ -27,25 +27,25 @@ act.set(net.Logout, function () {
 
 //CreateRoom
 act.set(net.CreateRoom, function () {
-	let server = this.server;
-	if (!server) {
+	let lobby = this.lobby;
+	if (!lobby) {
 		return;
 	}
 
 	let room = new Room(this);
-	server.addRoom(room);
+	lobby.addRoom(room);
 
 	this.send(net.CreateRoom, room.id);
 });
 
 //EnterRoom
 act.set(net.EnterRoom, function (id) {
-	let server = this.server;
-	if (!server) {
+	let lobby = this.lobby;
+	if (!lobby) {
 		return;
 	}
 
-	let room = server.findRoom(id);
+	let room = lobby.findRoom(id);
 	if (room) {
 		room.addUser(this);
 		this.send(net.EnterRoom, id);

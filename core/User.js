@@ -1,7 +1,7 @@
 
 const EventEmitter = require('events');
 const Packet = require('./Packet');
-const {WebSocket} = require('ws');
+const WebSocket = require('ws');
 
 class User extends EventEmitter {
 
@@ -13,7 +13,7 @@ class User extends EventEmitter {
 		super();
 
 		this.id = 0;
-		this.server = null;
+		this.lobby = null;
 		this.setSocket(socket);
 
 		this.onmessage = new Map;
@@ -155,8 +155,14 @@ class User extends EventEmitter {
 		this.socket = socket;
 		if (socket) {
 			this.socket.on('message', json => {
-				let packet = new Packet;
-				if (packet.parse(json)) {
+				let packet = null;
+				try {
+					packet = Packet.parse(json);
+				} catch (error) {
+					console.error(error);
+				}
+
+				if (packet) {
 					this.emit('action', packet);
 					this.trigger(packet.command, packet.arguments);
 				}

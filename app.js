@@ -6,7 +6,7 @@ const karuta = require('./core');
 const wss = new WebSocket.Server({
 	port: 2517
 });
-const server = new karuta.Server;
+const lobby = new karuta.Lobby;
 
 wss.on('connection', socket => {
 	let user = new karuta.User(socket);
@@ -25,5 +25,5 @@ wss.on('connection', socket => {
 			action.call(user, packet.arguments);
 		}
 	});
-	server.addUser(user);
+	lobby.addUser(user);
 });

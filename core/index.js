@@ -1,6 +1,6 @@
 
 module.exports = {
-	Server: require('./Server'),
+	Lobby: require('./Lobby'),
 	User: require('./User'),
 	actions: require('./actions'),
 };

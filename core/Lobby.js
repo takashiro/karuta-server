@@ -1,5 +1,5 @@
 
-class Server {
+class Lobby {
 
 	/**
 	 * Create a new instance of Server
@@ -46,7 +46,7 @@ class Server {
 	addUser(user) {
 		this.nextUserId++;
 		user.id = this.nextUserId;
-		user.server = this;
+		user.lobby = this;
 
 		this.users.set(user.id, user);
 		user.on('close', () => this.removeUser(user.id));
@@ -71,4 +71,4 @@ class Server {
 
 }
 
-module.exports = Server;
+module.exports = Lobby;
