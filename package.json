@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "run": "node app.js",
-    "test": "eslint . && node test.js"
+    "test": "eslint . && mocha"
   },
   "repository": {
     "type": "git",
@@ -26,6 +26,7 @@
     "ws": "^4.0.0"
   },
   "devDependencies": {
-    "eslint": "^5.16.0"
+    "eslint": "^5.16.0",
+    "mocha": "^6.1.3"
   }
 }
