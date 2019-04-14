@@ -7,7 +7,7 @@ const act = new Map;
 
 //CheckVersion
 act.set(net.CheckVersion, function () {
-	const version = require('./version');
+	const version = require('./version.json');
 	this.send(net.CheckVersion, version);
 });
 
