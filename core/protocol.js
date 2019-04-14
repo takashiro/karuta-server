@@ -1,25 +1,23 @@
 
-const Enum = require('./Enum');
+const net = {
+	Invalid: 0,
 
-const net = new Enum(
-	'Invalid',
+	CheckVersion: -1,
 
-	'CheckVersion',
+	Login: -2,
+	Logout: -3,
 
-	'Login',
-	'Logout',
+	CreateRoom: -4,
+	EnterRoom: -5,
+	LeaveRoom: -6,
+	UpdateRoom: -7,
 
-	'CreateRoom',
-	'EnterRoom',
-	'LeaveRoom',
-	'UpdateRoom',
+	SetUserList: -8,
+	AddUser: -9,
+	RemoveUser: -10,
 
-	'SetUserList',
-	'AddUser',
-	'RemoveUser',
-
-	'Speak',
-	'LoadGame',
-);
+	Speak: -11,
+	LoadGame: -12,
+};
 
 module.exports = net;
