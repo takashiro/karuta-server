@@ -53,14 +53,9 @@ class Room extends EventEmitter {
 		user.room = null;
 		this.users.delete(user);
 
-		if (this.closeTimeout) {
-			clearTimeout(this.closeTimeout);
+		if (this.users.size <= 0) {
+			this.emit('close');
 		}
-		this.closeTimeout = setTimeout(() => {
-			if (this.users.size <= 0) {
-				this.emit('close');
-			}
-		}, 10 * 60 * 1000);
 	}
 
 	/**
