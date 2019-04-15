@@ -24,13 +24,18 @@ describe('Lobby', () => {
 	});
 
 	const serverUrl = `ws://${localhost}:${port}`;
-	const ws = new WebSocket(serverUrl);
+	let ws = null;
+	let user = null;
 
-	it('should connect to ' + serverUrl, () => waitUntilConnected(ws));
+	it('should connect to ' + serverUrl, () => {
+		ws = new WebSocket(serverUrl);
+		waitUntilConnected(ws);
+	});
 
-	const user = new User(ws);
-
-	it('Client should be connected', () => assert(user.connected));
+	it('Client should be connected', () => {
+		user = new User(ws);
+		assert(user.connected);
+	});
 
 	it('Client checks server version', async () => {
 		const version = await user.request(cmd.CheckVersion);
