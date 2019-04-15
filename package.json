@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/takashiro/karuta-node-server#readme",
   "dependencies": {
-    "ws": "^4.0.0"
+    "ws": "^4.1.0"
   },
   "devDependencies": {
     "eslint": "^5.16.0",
