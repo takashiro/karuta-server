@@ -6,6 +6,8 @@ const App = require('../core/App');
 const User = require('../core/User');
 const cmd = require('../core/protocol');
 
+const localhost = '127.0.0.1';
+
 function waitUntilConnected(ws) {
 	return new Promise(function (resolve, reject) {
 		ws.once('open', resolve);
@@ -15,13 +17,13 @@ function waitUntilConnected(ws) {
 
 describe('Lobby', () => {
 	const port = 10000 + Math.floor(Math.random() * 55536);
-	const app = new App({socket: port});
+	const app = new App({ socket: {port, host: localhost} });
 
 	it('should be listening ' + port, async () => {
 		await app.start();
 	});
 
-	const serverUrl = `ws://localhost:${port}`;
+	const serverUrl = `ws://${localhost}:${port}`;
 	const ws = new WebSocket(serverUrl);
 
 	it('should connect to ' + serverUrl, () => waitUntilConnected(ws));
