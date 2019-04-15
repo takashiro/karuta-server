@@ -15,7 +15,7 @@ function occupyPort(port) {
 			reject();
 		});
 	});
-};
+}
 
 describe('App', () => {
 	let app = null;
