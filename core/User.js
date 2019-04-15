@@ -15,8 +15,6 @@ class User extends EventEmitter {
 		this.id = 0;
 		this.lobby = null;
 		this.setSocket(socket);
-
-		this.onmessage = new Map;
 	}
 
 	/**
@@ -68,8 +66,11 @@ class User extends EventEmitter {
 	 */
 	request(command, args = null, timeout = 15000) {
 		let reply = new Promise((resolve, reject) => {
-			this.bind(command, resolve);
-			setTimeout(reject, timeout);
+			let timer = setTimeout(reject, timeout);
+			this.once('cmd-' + command, args => {
+				clearTimeout(timer);
+				resolve(args);
+			});
 		});
 
 		this.send(command, args);
@@ -77,69 +78,17 @@ class User extends EventEmitter {
 	}
 
 	/**
-	 * Bind a callback to a network command
-	 * @param {number} command
-	 * @param {Function} callback
-	 * @param {object} options
-	 */
-	bind(command, callback, options = null) {
-		if (options && options.once) {
-			callback.once = true;
-		}
-
-		let callbacks = this.onmessage.get(command);
-		if (!callbacks) {
-			callbacks = new Set;
-			this.onmessage.set(command, callbacks);
-		}
-
-		callbacks.add(callback);
-	}
-
-	/**
-	 * Unbind a callback from a network command
-	 * @param {number} command
-	 * @param {Function} callback if it's null, all callback will be cleared
-	 */
-	unbind(command, callback = null) {
-		if (!callback) {
-			this.onmessage.delete(command);
-		} else {
-			let callbacks = this.onmessage.get(command);
-			if (callbacks) {
-				callbacks.delete(callback);
-			}
-		}
-	}
-
-	/**
-	 * Trigger callbacks of a network command
-	 * @param {number} command
-	 * @param {object} args
-	 */
-	trigger(command, args) {
-		let callbacks = this.onmessage.get(command);
-		if (callbacks) {
-			let removed = [];
-			for (let callback of callbacks) {
-				callback.call(this, args);
-				if (callback.once) {
-					removed.push(callback);
-				}
-			}
-			for (let callback of removed) {
-				callbacks.delete(callback);
-			}
-		}
-	}
-
-	/**
 	 * Disconnect the client
+	 * @return {Promise}
 	 */
 	disconnect() {
 		if (this.socket) {
+			let closed = new Promise(resolve => this.once('close', resolve));
 			this.socket.close();
 			this.socket = null;
+			return closed;
+		} else {
+			return Promise.resolve();
 		}
 	}
 
@@ -153,29 +102,31 @@ class User extends EventEmitter {
 		}
 
 		this.socket = socket;
-		if (socket) {
-			this.socket.on('message', json => {
-				let packet = null;
-				try {
-					packet = Packet.parse(json);
-				} catch (error) {
-					console.error(error);
-				}
-
-				if (packet) {
-					this.emit('action', packet);
-					this.trigger(packet.command, packet.arguments);
-				}
-			});
-
-			this.socket.on('close', (code, reason) => {
-				this.emit('close', code, reason);
-			});
-
-			this.socket.on('error', error => {
-				this.emit('close', error.code, error.message);
-			});
+		if (!socket) {
+			return;
 		}
+
+		this.socket.on('message', json => {
+			let packet = null;
+			try {
+				packet = Packet.parse(json);
+			} catch (error) {
+				console.error(error);
+			}
+
+			if (packet) {
+				this.emit('action', packet);
+				this.emit('cmd-' + packet.command, packet.arguments);
+			}
+		});
+
+		this.socket.on('close', (code, reason) => {
+			this.emit('close', code, reason);
+		});
+
+		this.socket.on('error', error => {
+			this.emit('close', error.code, error.message);
+		});
 	}
 }
 
