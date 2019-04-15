@@ -69,6 +69,19 @@ class Lobby {
 		this.users.delete(id);
 	}
 
+	/**
+	 * Disconnect all users and close all rooms.
+	 * @return {Promise}
+	 */
+	close() {
+		if (this.users.size <= 0) {
+			return Promise.resolve();
+		}
+
+		const users = Array.from(this.users.values());
+		return Promise.all(users.map(user => user.disconnect()));
+	}
+
 }
 
 module.exports = Lobby;

@@ -58,9 +58,17 @@ class App {
 	 * Shutdown server
 	 * @return {Promise}
 	 */
-	stop() {
-		return new Promise((resolve) => {
-			this.server.close(resolve);
+	async stop() {
+		await this.lobby.close();
+
+		await new Promise((resolve, reject) => {
+			this.server.close(function (err) {
+				if (err) {
+					reject(err);
+				} else {
+					resolve();
+				}
+			});
 		});
 	}
 
