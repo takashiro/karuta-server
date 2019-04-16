@@ -32,9 +32,11 @@ describe('Lobby', () => {
 		waitUntilConnected(ws);
 	});
 
-	it('Client should be connected', () => {
+	it('Client should be connected', async () => {
 		user = new User(ws);
 		assert(user.connected);
+		user.id = await user.request(cmd.Login);
+		assert(user.id > 0);
 	});
 
 	it('Client checks server version', async () => {
@@ -52,6 +54,18 @@ describe('Lobby', () => {
 	it('should have a new room', () => {
 		assert(app.lobby.rooms.size === 1);
 		assert(app.lobby.rooms.has(roomId));
+	});
+
+	let user2 = null;
+	it('comes another user', async () => {
+		const ws = new WebSocket(serverUrl);
+		await waitUntilConnected(ws);
+
+		user2 = new User(ws);
+		user2.id = await user.request(cmd.Login);
+
+		const ret = await user2.request(cmd.EnterRoom, roomId);
+		assert(ret === roomId);
 	});
 
 	it('should stop the app', async () => {
