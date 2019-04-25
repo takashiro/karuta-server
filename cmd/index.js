@@ -1,5 +1,5 @@
 
-const net = {
+const cmd = {
 	Invalid: 0,
 
 	CheckVersion: -1,
@@ -20,4 +20,4 @@ const net = {
 	LoadGame: -12,
 };
 
-module.exports = net;
+module.exports = cmd;

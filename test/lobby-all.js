@@ -4,7 +4,7 @@ const WebSocket = require('ws');
 
 const App = require('../core/App');
 const User = require('../core/User');
-const cmd = require('../core/protocol');
+const cmd = require('../cmd');
 
 const localhost = '127.0.0.1';
 
