@@ -58,6 +58,26 @@ class User extends EventEmitter {
 	}
 
 	/**
+	 * Wait for a command
+	 * @param {number} command
+	 * @param {number} timeout
+	 * @return {Promise} arguments of the command
+	 */
+	receive(command, timeout = 15000) {
+		return new Promise((resolve, reject) => {
+			const timer = setTimeout(() => {
+				this.unbind(command, resolve);
+				reject();
+			}, timeout);
+
+			this.bindOnce(command, args => {
+				clearTimeout(timer);
+				resolve(args);
+			});
+		});
+	}
+
+	/**
 	 * Send a command to the client and return the response
 	 * @param {number} command
 	 * @param {object} args
@@ -65,14 +85,7 @@ class User extends EventEmitter {
 	 * @return {Promise<>} the promise that resolves user response
 	 */
 	request(command, args = null, timeout = 15000) {
-		let reply = new Promise((resolve, reject) => {
-			let timer = setTimeout(reject, timeout);
-			this.once('cmd-' + command, args => {
-				clearTimeout(timer);
-				resolve(args);
-			});
-		});
-
+		let reply = this.receive(command, timeout);
 		this.send(command, args);
 		return reply;
 	}
@@ -128,6 +141,34 @@ class User extends EventEmitter {
 			this.emit('close', error.code, error.message);
 		});
 	}
+
+	/**
+	 * Bind a listener to a command
+	 * @param {number} command
+	 * @param {function} listener
+	 */
+	bind(command, listener) {
+		this.on('cmd-' + command, listener);
+	}
+
+	/**
+	 * Unbind a listener from a command
+	 * @param {number} command
+	 * @param {function} listener
+	 */
+	unbind(command, listener) {
+		this.off('cmd-' + command, listener);
+	}
+
+	/**
+	 * Bind a listener to a command for only once
+	 * @param {number} command
+	 * @param {function} listener
+	 */
+	bindOnce(command, listener) {
+		this.once('cmd-' + command, listener);
+	}
+
 }
 
 module.exports = User;

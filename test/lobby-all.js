@@ -24,9 +24,9 @@ describe('Lobby', () => {
 	});
 
 	const serverUrl = `ws://${localhost}:${port}`;
+
 	let ws = null;
 	let user = null;
-
 	it('should connect to ' + serverUrl, () => {
 		ws = new WebSocket(serverUrl);
 		waitUntilConnected(ws);
@@ -66,6 +66,23 @@ describe('Lobby', () => {
 
 		const ret = await user2.request(cmd.EnterRoom, roomId);
 		assert(ret === roomId);
+	});
+
+	const key = [2, 3, 9, 7];
+	it('broadcasts a command', async () => {
+		const reply1 = user.receive(cmd.SetUserList);
+		const reply2 = user2.receive(cmd.SetUserList);
+
+		const lobby = app.lobby;
+		const room = lobby.findRoom(roomId);
+		assert(room);
+
+		room.broadcast(cmd.SetUserList, key);
+
+		const users1 = await reply1;
+		const users2 = await reply2;
+		assert.deepStrictEqual(users1, key);
+		assert.deepStrictEqual(users2, key);
 	});
 
 	it('should stop the app', async () => {
