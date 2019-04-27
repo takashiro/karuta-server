@@ -15,6 +15,24 @@ function waitUntilConnected(ws) {
 	});
 }
 
+class GameDriver {
+
+	constructor() {
+		this.name = 'test driver';
+	}
+
+	setConfig(config) {
+		this.a = config.a;
+	}
+
+	getConfig() {
+		return {
+			a: this.a
+		};
+	}
+
+}
+
 describe('Lobby', () => {
 	const port = 10000 + Math.floor(Math.random() * 55536);
 	const app = new App({ socket: {port, host: localhost} });
@@ -103,6 +121,18 @@ describe('Lobby', () => {
 		assert(room.id === roomId);
 		assert(room.owner && room.owner.id === user.id);
 		assert(room.driver === null);
+	});
+
+	it('updates game driver configuration', async () => {
+		const room = lobby.findRoom(roomId);
+		room.driver = new GameDriver;
+
+		const salt = Math.floor(Math.random() * 0xFFFF);
+		const received = user2.receive(cmd.UpdateRoom);
+		user.send(cmd.UpdateRoom, {a: salt});
+		const config = await received;
+		assert(config.driver);
+		assert(config.driver.a === salt);
 	});
 
 	it('should stop the app', async () => {
