@@ -18,6 +18,7 @@ function waitUntilConnected(ws) {
 describe('Lobby', () => {
 	const port = 10000 + Math.floor(Math.random() * 55536);
 	const app = new App({ socket: {port, host: localhost} });
+	const lobby = app.lobby;
 
 	it('should be listening ' + port, async () => {
 		await app.start();
@@ -68,12 +69,22 @@ describe('Lobby', () => {
 		assert(ret === roomId);
 	});
 
+	it('unicast a command', async () => {
+		const text = 'This is a test: ' + Math.floor(Math.random() * 65536);
+
+		const reply = user.receive(cmd.Speak);
+		const room = lobby.findRoom(roomId);
+		const serverUser = room.findUser(user.id);
+		serverUser.send(cmd.Speak, text);
+		const message = await reply;
+		assert(message === text);
+	});
+
 	const key = [2, 3, 9, 7];
 	it('broadcasts a command', async () => {
 		const reply1 = user.receive(cmd.SetUserList);
 		const reply2 = user2.receive(cmd.SetUserList);
 
-		const lobby = app.lobby;
 		const room = lobby.findRoom(roomId);
 		assert(room);
 
