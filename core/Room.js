@@ -100,6 +100,8 @@ class Room extends EventEmitter {
 			config.driver = this.driver.getConfig();
 			config.driver.name = this.driver.name;
 		}
+
+		return config;
 	}
 
 	/**

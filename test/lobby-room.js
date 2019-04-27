@@ -96,6 +96,15 @@ describe('Lobby', () => {
 		assert.deepStrictEqual(users2, key);
 	});
 
+	it('updates room configuration', async () => {
+		const received = user2.receive(cmd.UpdateRoom);
+		user.send(cmd.UpdateRoom, {a: Math.floor(Math.random() * 0xFFFF)});
+		const room = await received;
+		assert(room.id === roomId);
+		assert(room.owner && room.owner.id === user.id);
+		assert(room.driver === null);
+	});
+
 	it('should stop the app', async () => {
 		await app.stop();
 	});
