@@ -13,7 +13,19 @@
 		{
 			"type": "node",
 			"request": "launch",
-			"name": "Launch Test",
+			"name": "Run Current Test",
+			"program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
+			"args": [
+				"--timeout",
+				"999999",
+				"--colors",
+				"${file}"
+			]
+		},
+		{
+			"type": "node",
+			"request": "launch",
+			"name": "Launch All Tests",
 			"program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
 			"args": [
 				"--colors",
