@@ -14,7 +14,32 @@ class User extends EventEmitter {
 
 		this.id = 0;
 		this.lobby = null;
+		this.room = null;
 		this.setSocket(socket);
+	}
+
+	/**
+	 * Gets the current room
+	 * @return {Room}
+	 */
+	getRoom() {
+		return this.room;
+	}
+
+	/**
+	 * Sets the current room
+	 * @param {Room} room
+	 */
+	setRoom(room) {
+		this.room = room;
+	}
+
+	/**
+	 * Gets the driver in the room
+	 * @return {object}
+	 */
+	getDriver() {
+		return this.room && this.room.driver;
 	}
 
 	/**

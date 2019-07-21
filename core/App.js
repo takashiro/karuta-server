@@ -6,16 +6,22 @@ const defaultConfig = require('../config.default.json');
 
 const Lobby = require('./Lobby');
 const User = require('./User');
-const CommonActions = require('./actions');
+
+const actions = require('./actions');
 
 async function userListener(packet) {
 	let action = null;
 	if (packet.command < 0) {
-		action = CommonActions.get(packet.command);
+		action = actions.get(packet.command);
 	} else if (packet.command > 0) {
-		const driver = this.room && this.room.driver;
-		const actions = driver && driver.actions;
-		action = actions && actions.get(packet.command);
+		const driver = this.getDriver();
+		if (driver && driver.getAction) {
+			try {
+				action = driver.getAction(packet.command);
+			} catch (error) {
+				console.error('Failed to get driver action: ' + error);
+			}
+		}
 	}
 
 	if (action) {
