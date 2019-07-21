@@ -49,7 +49,7 @@ class App {
 	 * @return {Promise}
 	 */
 	start() {
-		return new Promise((resolve, reject) => {
+		return new Promise(resolve => {
 			this.server.listen(this.config.socket, resolve);
 		});
 	}
