@@ -32,6 +32,14 @@ class Room extends EventEmitter {
 	}
 
 	/**
+	 * Gets user list
+	 * @return {User[]}
+	 */
+	getUsers() {
+		return Array.from(this.users);
+	}
+
+	/**
 	 * Add a user into this room
 	 * @param {User} user
 	 */

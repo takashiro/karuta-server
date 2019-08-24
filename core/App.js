@@ -30,7 +30,7 @@ async function userListener(packet) {
 			this.send(packet.command, ret);
 		}
 	} else {
-		console.error('Undefined command: ' + packet.command);
+		// This should be a reply.
 	}
 }
 
