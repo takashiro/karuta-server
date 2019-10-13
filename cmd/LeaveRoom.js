@@ -1,6 +1,6 @@
 
 function LeaveRoom() {
-	let room = this.room;
+	const { room } = this;
 	if (room) {
 		room.removeUser(this);
 	}

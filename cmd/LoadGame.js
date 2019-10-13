@@ -1,12 +1,12 @@
 
-//LoadGame
+// LoadGame
 function LoadGame(driver) {
-	let room = this.room;
-	if (!room || room.owner != this) {
-		return;
+	const { room } = this;
+	if (!room || room.owner !== this) {
+		return null;
 	}
 
-	let loaded = room.loadExtension(driver);
+	const loaded = room.loadExtension(driver);
 	return loaded ? driver : null;
 }
 

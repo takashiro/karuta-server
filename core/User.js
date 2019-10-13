@@ -1,10 +1,9 @@
 
 const EventEmitter = require('events');
-const Packet = require('./Packet');
 const WebSocket = require('ws');
+const Packet = require('./Packet');
 
 class User extends EventEmitter {
-
 	/**
 	 * Create a new instance of User
 	 * @param {WebSocket} socket the web socket that connects to the client
@@ -46,7 +45,7 @@ class User extends EventEmitter {
 	 * @return {boolean} whether the user is connected
 	 */
 	get connected() {
-		return this.socket && this.socket.readyState == WebSocket.OPEN;
+		return this.socket && this.socket.readyState === WebSocket.OPEN;
 	}
 
 	/**
@@ -55,7 +54,7 @@ class User extends EventEmitter {
 	get briefInfo() {
 		return {
 			id: this.id,
-			nickname: this.nickname
+			nickname: this.nickname,
 		};
 	}
 
@@ -70,7 +69,7 @@ class User extends EventEmitter {
 			return false;
 		}
 
-		let packet = new Packet;
+		const packet = new Packet();
 		packet.command = command;
 		packet.arguments = args;
 
@@ -95,7 +94,7 @@ class User extends EventEmitter {
 				reject();
 			}, timeout);
 
-			this.bindOnce(command, args => {
+			this.bindOnce(command, (args) => {
 				clearTimeout(timer);
 				resolve(args);
 			});
@@ -110,7 +109,7 @@ class User extends EventEmitter {
 	 * @return {Promise<>} the promise that resolves user response
 	 */
 	request(command, args = null, timeout = 15000) {
-		let reply = this.receive(command, timeout);
+		const reply = this.receive(command, timeout);
 		this.send(command, args);
 		return reply;
 	}
@@ -121,13 +120,12 @@ class User extends EventEmitter {
 	 */
 	disconnect() {
 		if (this.socket) {
-			let closed = new Promise(resolve => this.once('close', resolve));
+			const closed = new Promise((resolve) => this.once('close', resolve));
 			this.socket.close();
 			this.socket = null;
 			return closed;
-		} else {
-			return Promise.resolve();
 		}
+		return Promise.resolve();
 	}
 
 	/**
@@ -144,7 +142,7 @@ class User extends EventEmitter {
 			return;
 		}
 
-		this.socket.on('message', json => {
+		this.socket.on('message', (json) => {
 			let packet = null;
 			try {
 				packet = Packet.parse(json);
@@ -154,7 +152,7 @@ class User extends EventEmitter {
 
 			if (packet) {
 				this.emit('action', packet);
-				this.emit('cmd-' + packet.command, packet.arguments);
+				this.emit(`cmd-${packet.command}`, packet.arguments);
 			}
 		});
 
@@ -162,7 +160,7 @@ class User extends EventEmitter {
 			this.emit('close', code, reason);
 		});
 
-		this.socket.on('error', error => {
+		this.socket.on('error', (error) => {
 			this.emit('close', error.code, error.message);
 		});
 	}
@@ -173,7 +171,7 @@ class User extends EventEmitter {
 	 * @param {function} listener
 	 */
 	bind(command, listener) {
-		this.on('cmd-' + command, listener);
+		this.on(`cmd-${command}`, listener);
 	}
 
 	/**
@@ -182,7 +180,7 @@ class User extends EventEmitter {
 	 * @param {function} listener
 	 */
 	unbind(command, listener) {
-		this.off('cmd-' + command, listener);
+		this.off(`cmd-${command}`, listener);
 	}
 
 	/**
@@ -191,9 +189,8 @@ class User extends EventEmitter {
 	 * @param {function} listener
 	 */
 	bindOnce(command, listener) {
-		this.once('cmd-' + command, listener);
+		this.once(`cmd-${command}`, listener);
 	}
-
 }
 
 module.exports = User;

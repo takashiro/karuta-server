@@ -2,9 +2,9 @@
 const App = require('./core/App');
 
 // Load configurations
-let config = (function () {
+const config = (function () {
 	let configFile = './config.json';
-	for (let argv of process.argv) {
+	for (const argv of process.argv) {
 		if (argv.startsWith('--config=')) {
 			configFile = argv.substr(9);
 		}
@@ -15,10 +15,12 @@ let config = (function () {
 	} catch (error) {
 		console.log(error);
 	}
-})();
+
+	return {};
+}());
 
 // Start up application
 (async function () {
 	const app = new App(config);
 	await app.start();
-})();
+}());

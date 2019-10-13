@@ -2,12 +2,12 @@
 const Room = require('../core/Room');
 
 function CreateRoom() {
-	let lobby = this.lobby;
+	const { lobby } = this;
 	if (!lobby) {
-		return;
+		return 0;
 	}
 
-	let room = new Room(this);
+	const room = new Room(this);
 	lobby.addRoom(room);
 
 	return room.id;

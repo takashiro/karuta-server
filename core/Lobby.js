@@ -1,13 +1,12 @@
 
 class Lobby {
-
 	/**
 	 * Create a new instance of Server
 	 */
 	constructor() {
-		this.users = new Map;
+		this.users = new Map();
 		this.nextUserId = 0;
-		this.rooms = new Map;
+		this.rooms = new Map();
 		this.nextRoomId = 0;
 	}
 
@@ -79,9 +78,8 @@ class Lobby {
 		}
 
 		const users = Array.from(this.users.values());
-		return Promise.all(users.map(user => user.disconnect()));
+		return Promise.all(users.map((user) => user.disconnect()));
 	}
-
 }
 
 module.exports = Lobby;

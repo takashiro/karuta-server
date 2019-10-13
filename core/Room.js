@@ -2,7 +2,6 @@
 const EventEmitter = require('events');
 
 class Room extends EventEmitter {
-
 	/**
 	 * Create a new instance of Room
 	 * @param {User} owner the room owner
@@ -14,7 +13,7 @@ class Room extends EventEmitter {
 		this.owner = owner;
 		this.driver = null;
 
-		this.users = new Set;
+		this.users = new Set();
 		this.addUser(owner);
 	}
 
@@ -23,7 +22,7 @@ class Room extends EventEmitter {
 	 * @param {number} id user id
 	 */
 	findUser(id) {
-		for (let user of this.users) {
+		for (const user of this.users) {
 			if (user.id === id) {
 				return user;
 			}
@@ -72,7 +71,7 @@ class Room extends EventEmitter {
 	 * @param {object} args
 	 */
 	broadcast(command, args = null) {
-		for (let user of this.users) {
+		for (const user of this.users) {
 			user.send(command, args);
 		}
 	}
@@ -84,7 +83,7 @@ class Room extends EventEmitter {
 	 * @param {object} args
 	 */
 	broadcastExcept(except, command, args = null) {
-		for (let user of this.users) {
+		for (const user of this.users) {
 			if (user === except) {
 				continue;
 			}
@@ -96,12 +95,12 @@ class Room extends EventEmitter {
 	 * Getter of room configuration
 	 */
 	getConfig() {
-		let config = {
+		const config = {
 			id: this.id,
 			owner: {
-				id: this.owner.id
+				id: this.owner.id,
 			},
-			driver: null
+			driver: null,
 		};
 
 		if (this.driver && this.driver.getConfig) {
@@ -129,7 +128,7 @@ class Room extends EventEmitter {
 	 */
 	loadExtension(name) {
 		try {
-			const GameDriver = require('../extension/' + name);
+			const GameDriver = require(`../extension/${name}`);
 			this.driver = new GameDriver(this);
 			return true;
 		} catch (error) {
@@ -137,7 +136,6 @@ class Room extends EventEmitter {
 			return false;
 		}
 	}
-
 }
 
 module.exports = Room;

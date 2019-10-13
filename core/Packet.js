@@ -1,6 +1,5 @@
 
 class Packet {
-
 	/**
 	 * Create a network packet
 	 */
@@ -15,15 +14,13 @@ class Packet {
 	 * @return {Packet} a valid packet
 	 */
 	static parse(data) {
-		let arg = JSON.parse(data);
+		const arg = JSON.parse(data);
 		if (arg instanceof Array) {
-			let packet = new Packet;
-			packet.command = arg[0];
-			packet.arguments = arg[1];
+			const packet = new Packet();
+			[packet.command, packet.arguments] = arg;
 			return packet;
-		} else {
-			throw new Error('The packet must be an array.');
 		}
+		throw new Error('The packet must be an array.');
 	}
 
 	/**
@@ -31,13 +28,12 @@ class Packet {
 	 * @return {string} JSON string representation
 	 */
 	toJSON() {
-		let json = [this.command];
+		const json = [this.command];
 		if (this.arguments !== undefined && this.arguments !== null) {
 			json.push(this.arguments);
 		}
 		return JSON.stringify(json);
 	}
-
 }
 
 module.exports = Packet;

@@ -1,6 +1,6 @@
 
 function Login(credential) {
-	//TO-DO
+	// TO-DO
 	if (credential) {
 		this.name = credential.name;
 	}

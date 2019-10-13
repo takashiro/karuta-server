@@ -19,7 +19,7 @@ async function userListener(packet) {
 			try {
 				action = driver.getAction(packet.command);
 			} catch (error) {
-				console.error('Failed to get driver action: ' + error);
+				console.error(`Failed to get driver action: ${error}`);
 			}
 		}
 	}
@@ -35,18 +35,17 @@ async function userListener(packet) {
 }
 
 function lobbyListener(socket) {
-	let user = new User(socket);
+	const user = new User(socket);
 	user.on('action', userListener.bind(user));
 	this.addUser(user);
 }
 
 class App {
-
 	constructor(config) {
-		this.config = Object.assign({}, defaultConfig, config);
-		this.lobby = new Lobby;
+		this.config = { ...defaultConfig, ...config };
+		this.lobby = new Lobby();
 		this.server = http.createServer();
-		this.wss = new WebSocket.Server({server: this.server});
+		this.wss = new WebSocket.Server({ server: this.server });
 		this.wss.on('connection', lobbyListener.bind(this.lobby));
 	}
 
@@ -55,7 +54,7 @@ class App {
 	 * @return {Promise}
 	 */
 	start() {
-		return new Promise(resolve => {
+		return new Promise((resolve) => {
 			this.server.listen(this.config.socket, resolve);
 		});
 	}
@@ -68,7 +67,7 @@ class App {
 		await this.lobby.close();
 
 		await new Promise((resolve, reject) => {
-			this.server.close(function (err) {
+			this.server.close((err) => {
 				if (err) {
 					reject(err);
 				} else {
@@ -77,7 +76,6 @@ class App {
 			});
 		});
 	}
-
 }
 
 module.exports = App;

@@ -2,8 +2,8 @@
 const cmd = require('./index');
 
 function UpdateRoom(config) {
-	let room = this.room;
-	if (!room || room.owner != this) {
+	const { room } = this;
+	if (!room || room.owner !== this) {
 		return;
 	}
 

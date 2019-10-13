@@ -1,4 +1,3 @@
-
 const assert = require('assert');
 const WebSocket = require('ws');
 
@@ -8,15 +7,14 @@ const cmd = require('../cmd');
 
 const localhost = '127.0.0.1';
 
-function waitUntilConnected(ws) {
-	return new Promise(function (resolve, reject) {
-		ws.once('open', resolve);
-		ws.once('close', reject);
-	});
+function waitUntilConnected(socket) {
+	return new Promise(((resolve, reject) => {
+		socket.once('open', resolve);
+		socket.once('close', reject);
+	}));
 }
 
 class GameDriver {
-
 	constructor() {
 		this.name = 'test driver';
 	}
@@ -27,18 +25,17 @@ class GameDriver {
 
 	getConfig() {
 		return {
-			a: this.a
+			a: this.a,
 		};
 	}
-
 }
 
 describe('Lobby', () => {
 	const port = 10000 + Math.floor(Math.random() * 55536);
-	const app = new App({ socket: {port, host: localhost} });
-	const lobby = app.lobby;
+	const app = new App({ socket: { port, host: localhost } });
+	const { lobby } = app;
 
-	it('should be listening ' + port, async () => {
+	it(`should be listening ${port}`, async () => {
 		await app.start();
 	});
 
@@ -46,7 +43,7 @@ describe('Lobby', () => {
 
 	let ws = null;
 	let user = null;
-	it('should connect to ' + serverUrl, () => {
+	it(`should connect to ${serverUrl}`, () => {
 		ws = new WebSocket(serverUrl);
 		waitUntilConnected(ws);
 	});
@@ -77,10 +74,10 @@ describe('Lobby', () => {
 
 	let user2 = null;
 	it('comes another user', async () => {
-		const ws = new WebSocket(serverUrl);
-		await waitUntilConnected(ws);
+		const socket = new WebSocket(serverUrl);
+		await waitUntilConnected(socket);
 
-		user2 = new User(ws);
+		user2 = new User(socket);
 		user2.id = await user.request(cmd.Login);
 
 		const ret = await user2.request(cmd.EnterRoom, roomId);
@@ -88,7 +85,7 @@ describe('Lobby', () => {
 	});
 
 	it('unicast a command', async () => {
-		const text = 'This is a test: ' + Math.floor(Math.random() * 65536);
+		const text = `This is a test: ${Math.floor(Math.random() * 65536)}`;
 
 		const reply = user.receive(cmd.Speak);
 		const room = lobby.findRoom(roomId);
@@ -116,7 +113,7 @@ describe('Lobby', () => {
 
 	it('updates room configuration', async () => {
 		const received = user2.receive(cmd.UpdateRoom);
-		user.send(cmd.UpdateRoom, {a: Math.floor(Math.random() * 0xFFFF)});
+		user.send(cmd.UpdateRoom, { a: Math.floor(Math.random() * 0xFFFF) });
 		const room = await received;
 		assert(room.id === roomId);
 		assert(room.owner && room.owner.id === user.id);
@@ -125,11 +122,11 @@ describe('Lobby', () => {
 
 	it('updates game driver configuration', async () => {
 		const room = lobby.findRoom(roomId);
-		room.driver = new GameDriver;
+		room.driver = new GameDriver();
 
 		const salt = Math.floor(Math.random() * 0xFFFF);
 		const received = user2.receive(cmd.UpdateRoom);
-		user.send(cmd.UpdateRoom, {a: salt});
+		user.send(cmd.UpdateRoom, { a: salt });
 		const config = await received;
 		assert(config.driver);
 		assert(config.driver.a === salt);

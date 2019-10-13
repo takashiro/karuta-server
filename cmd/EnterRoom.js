@@ -1,18 +1,16 @@
 
-
 function EnterRoom(id) {
-	let lobby = this.lobby;
+	const { lobby } = this;
 	if (!lobby) {
-		return;
+		return -1;
 	}
 
-	let room = lobby.findRoom(id);
+	const room = lobby.findRoom(id);
 	if (room) {
 		room.addUser(this);
 		return room.id;
-	} else {
-		return -1;
 	}
+	return -1;
 }
 
 module.exports = EnterRoom;
