@@ -89,15 +89,19 @@ class User extends EventEmitter {
 	 */
 	receive(command, timeout = 15000) {
 		return new Promise((resolve, reject) => {
-			const timer = setTimeout(() => {
-				this.unbind(command, resolve);
+			let timer = null;
+
+			const resolver = (args) => {
+				clearTimeout(timer);
+				resolve(args);
+			};
+
+			timer = setTimeout(() => {
+				this.unbind(command, resolver);
 				reject();
 			}, timeout);
 
-			this.bindOnce(command, (args) => {
-				clearTimeout(timer);
-				resolve(args);
-			});
+			this.bindOnce(command, resolver);
 		});
 	}
 
