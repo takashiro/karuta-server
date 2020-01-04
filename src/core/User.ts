@@ -5,13 +5,18 @@ import Packet from './Packet';
 import Lobby from './Lobby';
 import Room from './Room';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Action = (args: any) => void;
 
 export default class User extends EventEmitter {
 	id: number;
+
 	lobby: Lobby;
+
 	room: Room;
+
 	socket: WebSocket;
+
 	nickname: string;
 
 	/**
@@ -38,7 +43,7 @@ export default class User extends EventEmitter {
 	 * Sets the current room
 	 * @param room
 	 */
-	setRoom(room: Room) {
+	setRoom(room: Room): void {
 		this.room = room;
 	}
 
@@ -59,7 +64,7 @@ export default class User extends EventEmitter {
 	/**
 	 * @return brief infomation
 	 */
-	get briefInfo(): { id: number; nickname: string; } {
+	get briefInfo(): { id: number; nickname: string } {
 		return {
 			id: this.id,
 			nickname: this.nickname,
@@ -95,11 +100,13 @@ export default class User extends EventEmitter {
 	 * @param timeout
 	 * @return arguments of the command
 	 */
-	receive(command: number, timeout: number = 15000): Promise<any> {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	receive(command: number, timeout = 15000): Promise<any> {
 		return new Promise((resolve, reject) => {
-			let timer = null;
+			let timer: NodeJS.Timeout = null;
 
-			const resolver = (args) => {
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			const resolver: (args: any) => void = (args: any) => {
 				clearTimeout(timer);
 				resolve(args);
 			};
@@ -120,7 +127,8 @@ export default class User extends EventEmitter {
 	 * @param timeout
 	 * @return the promise that resolves user response
 	 */
-	request(command: number, args: object = null, timeout: number = 15000): Promise<any> {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	request(command: number, args: object = null, timeout = 15000): Promise<any> {
 		const reply = this.receive(command, timeout);
 		this.send(command, args);
 		return reply;
@@ -142,7 +150,7 @@ export default class User extends EventEmitter {
 	 * Disconnect current socket and set a new one
 	 * @param {WebSocket} socket
 	 */
-	setSocket(socket: WebSocket) {
+	setSocket(socket: WebSocket): void {
 		if (this.socket) {
 			this.disconnect();
 		}
@@ -180,7 +188,7 @@ export default class User extends EventEmitter {
 	 * @param command
 	 * @param listener
 	 */
-	bind(command: number, listener: Action) {
+	bind(command: number, listener: Action): void {
 		this.on(`cmd-${command}`, listener);
 	}
 
@@ -189,7 +197,7 @@ export default class User extends EventEmitter {
 	 * @param command
 	 * @param listener
 	 */
-	unbind(command: number, listener: Action) {
+	unbind(command: number, listener: Action): void {
 		this.off(`cmd-${command}`, listener);
 	}
 
@@ -198,7 +206,7 @@ export default class User extends EventEmitter {
 	 * @param command
 	 * @param listener
 	 */
-	bindOnce(command: number, listener: Action) {
+	bindOnce(command: number, listener: Action): void {
 		this.once(`cmd-${command}`, listener);
 	}
 }
