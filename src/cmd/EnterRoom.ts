@@ -1,5 +1,5 @@
 
-function EnterRoom(id) {
+export default function EnterRoom(id) {
 	const { lobby } = this;
 	if (!lobby) {
 		return -1;
@@ -12,5 +12,3 @@ function EnterRoom(id) {
 	}
 	return -1;
 }
-
-module.exports = EnterRoom;

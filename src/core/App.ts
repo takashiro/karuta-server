@@ -1,13 +1,12 @@
 
-const http = require('http');
-const WebSocket = require('ws');
+import * as http from 'http';
+import * as WebSocket from 'ws';
 
-const defaultConfig = require('../config.default.json');
+import { CommandMap as actions } from '../cmd';
+import Lobby from './Lobby';
+import User from './User';
 
-const Lobby = require('./Lobby');
-const User = require('./User');
-
-const actions = require('./actions');
+import * as defaultConfig from '../../config.default.json';
 
 async function userListener(packet) {
 	let action = null;
@@ -40,7 +39,12 @@ function lobbyListener(socket) {
 	this.addUser(user);
 }
 
-class App {
+export default class App {
+	config: object;
+	lobby: Lobby;
+	server: http.Server;
+	wss: WebSocket.Server;
+
 	constructor(config) {
 		this.config = { ...defaultConfig, ...config };
 		this.lobby = new Lobby();
@@ -77,5 +81,3 @@ class App {
 		});
 	}
 }
-
-module.exports = App;

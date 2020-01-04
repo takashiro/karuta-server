@@ -1,7 +1,7 @@
 
-const Room = require('../core/Room');
+import Room from '../core/Room';
 
-function CreateRoom() {
+export default function CreateRoom() {
 	const { lobby } = this;
 	if (!lobby) {
 		return 0;
@@ -12,5 +12,3 @@ function CreateRoom() {
 
 	return room.id;
 }
-
-module.exports = CreateRoom;

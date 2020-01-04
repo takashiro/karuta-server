@@ -1,14 +1,22 @@
+import * as EventEmitter from 'events';
+import * as WebSocket from 'ws';
 
-const EventEmitter = require('events');
-const WebSocket = require('ws');
-const Packet = require('./Packet');
+import Packet from './Packet';
+import Lobby from './Lobby';
+import Room from './Room';
 
-class User extends EventEmitter {
+export default class User extends EventEmitter {
+	id: number;
+	lobby: Lobby;
+	room: Room;
+	socket: WebSocket;
+	nickname: string;
+
 	/**
 	 * Create a new instance of User
 	 * @param {WebSocket} socket the web socket that connects to the client
 	 */
-	constructor(socket = null) {
+	constructor(socket: WebSocket = null) {
 		super();
 
 		this.id = 0;
@@ -19,39 +27,37 @@ class User extends EventEmitter {
 
 	/**
 	 * Gets the current room
-	 * @return {Room}
 	 */
-	getRoom() {
+	getRoom(): Room {
 		return this.room;
 	}
 
 	/**
 	 * Sets the current room
-	 * @param {Room} room
+	 * @param room
 	 */
-	setRoom(room) {
+	setRoom(room: Room) {
 		this.room = room;
 	}
 
 	/**
 	 * Gets the driver in the room
-	 * @return {object}
 	 */
-	getDriver() {
+	getDriver(): object {
 		return this.room && this.room.driver;
 	}
 
 	/**
-	 * @return {boolean} whether the user is connected
+	 * @return whether the user is connected
 	 */
-	get connected() {
+	get connected(): boolean {
 		return this.socket && this.socket.readyState === WebSocket.OPEN;
 	}
 
 	/**
-	 * @return {{id:number,name:string}} brief infomation
+	 * @return brief infomation
 	 */
-	get briefInfo() {
+	get briefInfo(): { id: number; nickname: string; } {
 		return {
 			id: this.id,
 			nickname: this.nickname,
@@ -60,11 +66,11 @@ class User extends EventEmitter {
 
 	/**
 	 * Send a command to the client
-	 * @param {number} command
-	 * @param {object} args
-	 * @return {boolean} true iff. the command was sent
+	 * @param command
+	 * @param args
+	 * @return true iff. the command was sent
 	 */
-	send(command, args = null) {
+	send(command: number, args: object = null): boolean {
 		if (!this.socket) {
 			return false;
 		}
@@ -83,11 +89,11 @@ class User extends EventEmitter {
 
 	/**
 	 * Wait for a command
-	 * @param {number} command
-	 * @param {number} timeout
-	 * @return {Promise} arguments of the command
+	 * @param command
+	 * @param timeout
+	 * @return arguments of the command
 	 */
-	receive(command, timeout = 15000) {
+	receive(command: number, timeout: number = 15000): Promise<any> {
 		return new Promise((resolve, reject) => {
 			let timer = null;
 
@@ -107,12 +113,12 @@ class User extends EventEmitter {
 
 	/**
 	 * Send a command to the client and return the response
-	 * @param {number} command
-	 * @param {object} args
-	 * @param {number} timeout
-	 * @return {Promise<>} the promise that resolves user response
+	 * @param command
+	 * @param args
+	 * @param timeout
+	 * @return the promise that resolves user response
 	 */
-	request(command, args = null, timeout = 15000) {
+	request(command: number, args: object = null, timeout: number = 15000): Promise<any> {
 		const reply = this.receive(command, timeout);
 		this.send(command, args);
 		return reply;
@@ -120,23 +126,21 @@ class User extends EventEmitter {
 
 	/**
 	 * Disconnect the client
-	 * @return {Promise}
 	 */
-	disconnect() {
+	async disconnect(): Promise<void> {
 		if (this.socket) {
 			const closed = new Promise((resolve) => this.once('close', resolve));
 			this.socket.close();
 			this.socket = null;
-			return closed;
+			await closed;
 		}
-		return Promise.resolve();
 	}
 
 	/**
 	 * Disconnect current socket and set a new one
 	 * @param {WebSocket} socket
 	 */
-	setSocket(socket) {
+	setSocket(socket: WebSocket) {
 		if (this.socket) {
 			this.disconnect();
 		}
@@ -164,37 +168,35 @@ class User extends EventEmitter {
 			this.emit('close', code, reason);
 		});
 
-		this.socket.on('error', (error) => {
+		this.socket.on('error', (error: NodeJS.ErrnoException) => {
 			this.emit('close', error.code, error.message);
 		});
 	}
 
 	/**
 	 * Bind a listener to a command
-	 * @param {number} command
-	 * @param {function} listener
+	 * @param command
+	 * @param listener
 	 */
-	bind(command, listener) {
+	bind(command: number, listener: function) {
 		this.on(`cmd-${command}`, listener);
 	}
 
 	/**
 	 * Unbind a listener from a command
-	 * @param {number} command
-	 * @param {function} listener
+	 * @param command
+	 * @param listener
 	 */
-	unbind(command, listener) {
+	unbind(command: number, listener: function) {
 		this.off(`cmd-${command}`, listener);
 	}
 
 	/**
 	 * Bind a listener to a command for only once
-	 * @param {number} command
-	 * @param {function} listener
+	 * @param command
+	 * @param listener
 	 */
-	bindOnce(command, listener) {
+	bindOnce(command: number, listener: function) {
 		this.once(`cmd-${command}`, listener);
 	}
 }
-
-module.exports = User;

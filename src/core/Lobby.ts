@@ -1,5 +1,12 @@
+import User from './User';
+import Room from './Room';
 
-class Lobby {
+export default class Lobby {
+	users: Map<number, User>;
+	nextUserId: number;
+	rooms: Map<number, Room>;
+	nextRoomId: number;
+
 	/**
 	 * Create a new instance of Server
 	 */
@@ -12,9 +19,9 @@ class Lobby {
 
 	/**
 	 * Add a new room
-	 * @param {Room} room
+	 * @param room
 	 */
-	addRoom(room) {
+	addRoom(room: Room) {
 		this.nextRoomId++;
 		room.id = this.nextRoomId;
 		this.rooms.set(room.id, room);
@@ -24,25 +31,25 @@ class Lobby {
 
 	/**
 	 * Find a room by room id
-	 * @param {number} id room id
+	 * @param id room id
 	 */
-	findRoom(id) {
+	findRoom(id: number) {
 		return this.rooms.get(id);
 	}
 
 	/**
 	 * Remove a room by room id
-	 * @param {number} id room id
+	 * @param id room id
 	 */
-	removeRoom(id) {
+	removeRoom(id: number) {
 		this.rooms.delete(id);
 	}
 
 	/**
 	 * Add a new connected user and assign user id
-	 * @param {User} user the user instance
+	 * @param user the user instance
 	 */
-	addUser(user) {
+	addUser(user: User) {
 		this.nextUserId++;
 		user.id = this.nextUserId;
 		user.lobby = this;
@@ -53,33 +60,29 @@ class Lobby {
 
 	/**
 	 * Find a user by user id
-	 * @param {number} id user id
-	 * @return {User}
+	 * @param id user id
 	 */
-	findUser(id) {
+	findUser(id: number): User {
 		return this.users.get(id);
 	}
 
 	/**
 	 * Remove a user by user id
-	 * @param {number} id user id
+	 * @param id user id
 	 */
-	removeUser(id) {
+	removeUser(id: number) {
 		this.users.delete(id);
 	}
 
 	/**
 	 * Disconnect all users and close all rooms.
-	 * @return {Promise}
 	 */
-	close() {
+	async close(): Promise<void> {
 		if (this.users.size <= 0) {
-			return Promise.resolve();
+			return;
 		}
 
 		const users = Array.from(this.users.values());
-		return Promise.all(users.map((user) => user.disconnect()));
+		await Promise.all(users.map((user) => user.disconnect()));
 	}
 }
-
-module.exports = Lobby;

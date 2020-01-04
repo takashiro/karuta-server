@@ -1,12 +1,18 @@
+import * as EventEmitter from 'events';
 
-const EventEmitter = require('events');
+import User from './User';
 
-class Room extends EventEmitter {
+export default class Room extends EventEmitter {
+	id: number;
+	owner: User;
+	driver: any;
+	users: Set<User>;
+
 	/**
 	 * Create a new instance of Room
-	 * @param {User} owner the room owner
+	 * @param owner the room owner
 	 */
-	constructor(owner) {
+	constructor(owner: User) {
 		super();
 
 		this.id = 0;
@@ -19,9 +25,9 @@ class Room extends EventEmitter {
 
 	/**
 	 * Find a user by user id
-	 * @param {number} id user id
+	 * @param id user id
 	 */
-	findUser(id) {
+	findUser(id: number): User {
 		for (const user of this.users) {
 			if (user.id === id) {
 				return user;
@@ -32,17 +38,16 @@ class Room extends EventEmitter {
 
 	/**
 	 * Gets user list
-	 * @return {User[]}
 	 */
-	getUsers() {
+	getUsers(): User[] {
 		return Array.from(this.users);
 	}
 
 	/**
 	 * Add a user into this room
-	 * @param {User} user
+	 * @param user
 	 */
-	addUser(user) {
+	addUser(user: User) {
 		if (user.room) {
 			user.room.removeUser(user);
 		}
@@ -56,7 +61,7 @@ class Room extends EventEmitter {
 	 * Remove a user from this room
 	 * @param {User} user
 	 */
-	removeUser(user) {
+	removeUser(user: User) {
 		user.room = null;
 		this.users.delete(user);
 
@@ -67,10 +72,10 @@ class Room extends EventEmitter {
 
 	/**
 	 * Broadcast a command to all users in this room
-	 * @param {number} command
-	 * @param {object} args
+	 * @param command
+	 * @param args
 	 */
-	broadcast(command, args = null) {
+	broadcast(command: number, args: any = null) {
 		for (const user of this.users) {
 			user.send(command, args);
 		}
@@ -78,11 +83,11 @@ class Room extends EventEmitter {
 
 	/**
 	 * Broadcast a command to all users except one
-	 * @param {User} except
-	 * @param {number} command
-	 * @param {object} args
+	 * @param except
+	 * @param command
+	 * @param args
 	 */
-	broadcastExcept(except, command, args = null) {
+	broadcastExcept(except: User, command: number, args: any = null) {
 		for (const user of this.users) {
 			if (user === except) {
 				continue;
@@ -115,7 +120,7 @@ class Room extends EventEmitter {
 	 * Setter of room configuration
 	 * @param {*} config
 	 */
-	updateConfig(config) {
+	updateConfig(config: any) {
 		if (this.driver && this.driver.setConfig) {
 			this.driver.setConfig(config);
 		}
@@ -126,7 +131,7 @@ class Room extends EventEmitter {
 	 * @param {string} name driver name
 	 * @return {boolean}
 	 */
-	loadExtension(name) {
+	loadExtension(name: string): boolean {
 		try {
 			const GameDriver = require(`../extension/${name}`);
 			this.driver = new GameDriver(this);
@@ -137,5 +142,3 @@ class Room extends EventEmitter {
 		}
 	}
 }
-
-module.exports = Room;

@@ -1,5 +1,8 @@
 
-class Packet {
+export default class Packet {
+	command: number;
+	arguments: any;
+
 	/**
 	 * Create a network packet
 	 */
@@ -10,10 +13,10 @@ class Packet {
 
 	/**
 	 * Parse a packet from JSON string representation
-	 * @param {string} data JSON string representation
-	 * @return {Packet} a valid packet
+	 * @param data JSON string representation
+	 * @return a valid packet
 	 */
-	static parse(data) {
+	static parse(data: string): Packet {
 		const arg = JSON.parse(data);
 		if (arg instanceof Array) {
 			const packet = new Packet();
@@ -25,9 +28,9 @@ class Packet {
 
 	/**
 	 * Convert a packet into JSON string representation
-	 * @return {string} JSON string representation
+	 * @return JSON string representation
 	 */
-	toJSON() {
+	toJSON(): string {
 		const json = [this.command];
 		if (this.arguments !== undefined && this.arguments !== null) {
 			json.push(this.arguments);
@@ -35,5 +38,3 @@ class Packet {
 		return JSON.stringify(json);
 	}
 }
-
-module.exports = Packet;
