@@ -35,7 +35,9 @@ export enum Command {
 	LoadGame = -12,
 };
 
-const act = new Map<Command, object>();
+type CommandCallback = (args: any) => void;
+
+const act = new Map<Command, CommandCallback>();
 act.set(Command.CheckVersion, CheckVersion);
 act.set(Command.Login, Login);
 act.set(Command.Logout, Logout);
