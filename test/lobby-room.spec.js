@@ -35,7 +35,7 @@ describe('Lobby', () => {
 	const app = new App({ socket: { port, host: localhost } });
 	const { lobby } = app;
 
-	it(`should be listening ${port}`, async () => {
+	test(`should be listening ${port}`, async () => {
 		await app.start();
 	});
 
@@ -43,37 +43,37 @@ describe('Lobby', () => {
 
 	let ws = null;
 	let user = null;
-	it(`should connect to ${serverUrl}`, () => {
+	test(`should connect to ${serverUrl}`, async () => {
 		ws = new WebSocket(serverUrl);
-		waitUntilConnected(ws);
+		await waitUntilConnected(ws);
 	});
 
-	it('Client should be connected', async () => {
+	test('Client should be connected', async () => {
 		user = new User(ws);
 		assert(user.connected);
 		user.id = await user.request(cmd.Login);
 		assert(user.id > 0);
 	});
 
-	it('Client checks server version', async () => {
+	test('Client checks server version', async () => {
 		const version = await user.request(cmd.CheckVersion);
 		const serverVersion = require('../core/version.json');
 		assert.deepEqual(version, serverVersion);
 	});
 
 	let roomId = 0;
-	it('creates a room', async () => {
+	test('creates a room', async () => {
 		roomId = await user.request(cmd.CreateRoom);
 		assert(roomId > 0);
 	});
 
-	it('should have a new room', () => {
+	test('should have a new room', () => {
 		assert(app.lobby.rooms.size === 1);
 		assert(app.lobby.rooms.has(roomId));
 	});
 
 	let user2 = null;
-	it('comes another user', async () => {
+	test('comes another user', async () => {
 		const socket = new WebSocket(serverUrl);
 		await waitUntilConnected(socket);
 
@@ -84,7 +84,7 @@ describe('Lobby', () => {
 		assert(ret === roomId);
 	});
 
-	it('unicast a command', async () => {
+	test('unicast a command', async () => {
 		const text = `This is a test: ${Math.floor(Math.random() * 65536)}`;
 
 		const reply = user.receive(cmd.Speak);
@@ -96,7 +96,7 @@ describe('Lobby', () => {
 	});
 
 	const key = [2, 3, 9, 7];
-	it('broadcasts a command', async () => {
+	test('broadcasts a command', async () => {
 		const reply1 = user.receive(cmd.SetUserList);
 		const reply2 = user2.receive(cmd.SetUserList);
 
@@ -111,7 +111,7 @@ describe('Lobby', () => {
 		assert.deepStrictEqual(users2, key);
 	});
 
-	it('updates room configuration', async () => {
+	test('updates room configuration', async () => {
 		const received = user2.receive(cmd.UpdateRoom);
 		user.send(cmd.UpdateRoom, { a: Math.floor(Math.random() * 0xFFFF) });
 		const room = await received;
@@ -120,7 +120,7 @@ describe('Lobby', () => {
 		assert(room.driver === null);
 	});
 
-	it('updates game driver configuration', async () => {
+	test('updates game driver configuration', async () => {
 		const room = lobby.findRoom(roomId);
 		room.driver = new GameDriver();
 
@@ -132,7 +132,7 @@ describe('Lobby', () => {
 		assert(config.driver.a === salt);
 	});
 
-	it('should stop the app', async () => {
+	test('should stop the app', async () => {
 		await app.stop();
 	});
 });

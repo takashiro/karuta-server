@@ -5,9 +5,8 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
-    "test": "eslint . && mocha test",
-	"lint": "eslint .",
-	"test-coverage": "nyc --reporter=lcov --report-dir=build/coverage --temp-dir=build/.nyc_output mocha test"
+    "lint": "eslint .",
+    "test": "eslint . && jest"
   },
   "repository": {
     "type": "git",
@@ -31,7 +30,6 @@
     "eslint": "^6.5.1",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.18.2",
-    "mocha": "^6.2.0",
-    "nyc": "^14.1.1"
+    "jest": "^24.9.0"
   }
 }
