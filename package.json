@@ -2,9 +2,10 @@
   "name": "@karuta/server",
   "version": "0.1.0",
   "description": "Karuta Server (Node.js)",
-  "main": "app.js",
+  "main": "src/app.js",
   "scripts": {
-    "start": "node app.js",
+	"start": "node dist/app.js",
+	"build": "tsc",
     "lint": "eslint .",
     "test": "eslint . && jest"
   },
@@ -27,9 +28,12 @@
     "ws": "^4.1.0"
   },
   "devDependencies": {
+    "@types/node": "^13.1.4",
+    "@types/ws": "^6.0.4",
     "eslint": "^6.5.1",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.18.2",
-    "jest": "^24.9.0"
+    "jest": "^24.9.0",
+    "typescript": "^3.7.4"
   }
 }

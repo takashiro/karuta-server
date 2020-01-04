@@ -1,4 +1,5 @@
 *.log
+/dist/
 /build/
 /node_modules/
 /extension/
