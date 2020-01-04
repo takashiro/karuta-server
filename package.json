@@ -30,6 +30,8 @@
   "devDependencies": {
     "@types/node": "^13.1.4",
     "@types/ws": "^6.0.4",
+    "@typescript-eslint/eslint-plugin": "^2.14.0",
+    "@typescript-eslint/parser": "^2.14.0",
     "eslint": "^6.5.1",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.18.2",
