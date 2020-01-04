@@ -1,26 +1,9 @@
-
-const App = require('./core/App');
-
-// Load configurations
-const config = (function () {
-	let configFile = './config.json';
-	for (const argv of process.argv) {
-		if (argv.startsWith('--config=')) {
-			configFile = argv.substr(9);
-		}
-	}
-
-	try {
-		return require(configFile);
-	} catch (error) {
-		console.log(error);
-	}
-
-	return {};
-}());
+import App from './core/App';
+import readConfig from './util/readConfig';
 
 // Start up application
 (async function () {
+	const config = await readConfig();
 	const app = new App(config);
 	await app.start();
 }());
