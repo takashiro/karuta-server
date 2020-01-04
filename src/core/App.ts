@@ -5,6 +5,7 @@ import * as WebSocket from 'ws';
 import { CommandMap as actions } from '../cmd';
 import Lobby from './Lobby';
 import User from './User';
+import Config from './Config';
 
 import * as defaultConfig from '../../config.default.json';
 
@@ -40,7 +41,7 @@ function lobbyListener(socket) {
 }
 
 export default class App {
-	config: object;
+	config: Config;
 	lobby: Lobby;
 	server: http.Server;
 	wss: WebSocket.Server;
