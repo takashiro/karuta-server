@@ -1,11 +1,12 @@
 import * as EventEmitter from 'events';
 
 import User from './User';
+import Driver from './Driver';
 
 export default class Room extends EventEmitter {
 	id: number;
 	owner: User;
-	driver: any;
+	driver: Driver;
 	users: Set<User>;
 
 	/**
@@ -110,7 +111,7 @@ export default class Room extends EventEmitter {
 
 		if (this.driver && this.driver.getConfig) {
 			config.driver = this.driver.getConfig();
-			config.driver.name = this.driver.name;
+			config.driver.name = this.driver.getName();
 		}
 
 		return config;
@@ -118,9 +119,9 @@ export default class Room extends EventEmitter {
 
 	/**
 	 * Setter of room configuration
-	 * @param {*} config
+	 * @param config
 	 */
-	updateConfig(config: any) {
+	updateConfig(config: object) {
 		if (this.driver && this.driver.setConfig) {
 			this.driver.setConfig(config);
 		}

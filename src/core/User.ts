@@ -5,6 +5,8 @@ import Packet from './Packet';
 import Lobby from './Lobby';
 import Room from './Room';
 
+type Action = (args: any) => void;
+
 export default class User extends EventEmitter {
 	id: number;
 	lobby: Lobby;
@@ -178,7 +180,7 @@ export default class User extends EventEmitter {
 	 * @param command
 	 * @param listener
 	 */
-	bind(command: number, listener: function) {
+	bind(command: number, listener: Action) {
 		this.on(`cmd-${command}`, listener);
 	}
 
@@ -187,7 +189,7 @@ export default class User extends EventEmitter {
 	 * @param command
 	 * @param listener
 	 */
-	unbind(command: number, listener: function) {
+	unbind(command: number, listener: Action) {
 		this.off(`cmd-${command}`, listener);
 	}
 
@@ -196,7 +198,7 @@ export default class User extends EventEmitter {
 	 * @param command
 	 * @param listener
 	 */
-	bindOnce(command: number, listener: function) {
+	bindOnce(command: number, listener: Action) {
 		this.once(`cmd-${command}`, listener);
 	}
 }
