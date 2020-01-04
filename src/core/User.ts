@@ -152,7 +152,7 @@ export default class User extends EventEmitter {
 			return;
 		}
 
-		this.socket.on('message', (json) => {
+		this.socket.on('message', (json: string) => {
 			let packet = null;
 			try {
 				packet = Packet.parse(json);
