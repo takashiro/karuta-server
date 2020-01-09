@@ -1,12 +1,15 @@
-import * as EventEmitter from 'events';
+import { EventEmitter } from 'events';
 
 import User from './User';
 import Driver from './Driver';
 
 export default class Room extends EventEmitter {
 	id: number;
+
 	owner: User;
+
 	driver: Driver;
+
 	users: Set<User>;
 
 	/**
@@ -48,7 +51,7 @@ export default class Room extends EventEmitter {
 	 * Add a user into this room
 	 * @param user
 	 */
-	addUser(user: User) {
+	addUser(user: User): void {
 		if (user.room) {
 			user.room.removeUser(user);
 		}
@@ -62,7 +65,7 @@ export default class Room extends EventEmitter {
 	 * Remove a user from this room
 	 * @param {User} user
 	 */
-	removeUser(user: User) {
+	removeUser(user: User): void {
 		user.room = null;
 		this.users.delete(user);
 
@@ -76,7 +79,8 @@ export default class Room extends EventEmitter {
 	 * @param command
 	 * @param args
 	 */
-	broadcast(command: number, args: any = null) {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	broadcast(command: number, args: any = null): void {
 		for (const user of this.users) {
 			user.send(command, args);
 		}
@@ -88,7 +92,8 @@ export default class Room extends EventEmitter {
 	 * @param command
 	 * @param args
 	 */
-	broadcastExcept(except: User, command: number, args: any = null) {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	broadcastExcept(except: User, command: number, args: any = null): void {
 		for (const user of this.users) {
 			if (user === except) {
 				continue;
@@ -100,7 +105,7 @@ export default class Room extends EventEmitter {
 	/**
 	 * Getter of room configuration
 	 */
-	getConfig() {
+	getConfig(): object {
 		const config = {
 			id: this.id,
 			owner: {
@@ -121,7 +126,7 @@ export default class Room extends EventEmitter {
 	 * Setter of room configuration
 	 * @param config
 	 */
-	updateConfig(config: object) {
+	updateConfig(config: object): void {
 		if (this.driver && this.driver.setConfig) {
 			this.driver.setConfig(config);
 		}
@@ -134,6 +139,7 @@ export default class Room extends EventEmitter {
 	 */
 	loadExtension(name: string): boolean {
 		try {
+			// eslint-disable-next-line @typescript-eslint/no-var-requires
 			const GameDriver = require(`../extension/${name}`);
 			this.driver = new GameDriver(this);
 			return true;
