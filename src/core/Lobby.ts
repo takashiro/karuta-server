@@ -3,8 +3,11 @@ import Room from './Room';
 
 export default class Lobby {
 	users: Map<number, User>;
+
 	nextUserId: number;
+
 	rooms: Map<number, Room>;
+
 	nextRoomId: number;
 
 	/**
@@ -21,7 +24,7 @@ export default class Lobby {
 	 * Add a new room
 	 * @param room
 	 */
-	addRoom(room: Room) {
+	addRoom(room: Room): void {
 		this.nextRoomId++;
 		room.id = this.nextRoomId;
 		this.rooms.set(room.id, room);
@@ -33,7 +36,7 @@ export default class Lobby {
 	 * Find a room by room id
 	 * @param id room id
 	 */
-	findRoom(id: number) {
+	findRoom(id: number): Room {
 		return this.rooms.get(id);
 	}
 
@@ -41,7 +44,7 @@ export default class Lobby {
 	 * Remove a room by room id
 	 * @param id room id
 	 */
-	removeRoom(id: number) {
+	removeRoom(id: number): void {
 		this.rooms.delete(id);
 	}
 
@@ -49,7 +52,7 @@ export default class Lobby {
 	 * Add a new connected user and assign user id
 	 * @param user the user instance
 	 */
-	addUser(user: User) {
+	addUser(user: User): void {
 		this.nextUserId++;
 		user.id = this.nextUserId;
 		user.lobby = this;
@@ -70,7 +73,7 @@ export default class Lobby {
 	 * Remove a user by user id
 	 * @param id user id
 	 */
-	removeUser(id: number) {
+	removeUser(id: number): void {
 		this.users.delete(id);
 	}
 
