@@ -5,11 +5,12 @@ import * as WebSocket from 'ws';
 import { CommandMap as actions } from '../cmd';
 import Lobby from './Lobby';
 import User from './User';
+
+import defaultConfig from '../defaultConfig';
+import Packet from './Packet';
 import Config from './Config';
 
-import * as defaultConfig from '../../config.default.json';
-
-async function userListener(packet) {
+async function userListener(packet: Packet): Promise<void> {
 	let action = null;
 	if (packet.command < 0) {
 		action = actions.get(packet.command);
@@ -34,7 +35,7 @@ async function userListener(packet) {
 	}
 }
 
-function lobbyListener(socket) {
+function lobbyListener(socket: WebSocket): void {
 	const user = new User(socket);
 	user.on('action', userListener.bind(user));
 	this.addUser(user);
@@ -42,8 +43,11 @@ function lobbyListener(socket) {
 
 export default class App {
 	config: Config;
+
 	lobby: Lobby;
+
 	server: http.Server;
+
 	wss: WebSocket.Server;
 
 	constructor(config) {
@@ -56,9 +60,8 @@ export default class App {
 
 	/**
 	 * Start server to accept requests
-	 * @return {Promise}
 	 */
-	start() {
+	start(): Promise<void> {
 		return new Promise((resolve) => {
 			this.server.listen(this.config.socket, resolve);
 		});
@@ -66,9 +69,8 @@ export default class App {
 
 	/**
 	 * Shutdown server
-	 * @return {Promise}
 	 */
-	async stop() {
+	async stop(): Promise<void> {
 		await this.lobby.close();
 
 		await new Promise((resolve, reject) => {

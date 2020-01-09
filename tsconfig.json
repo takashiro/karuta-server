@@ -2,11 +2,9 @@
 	"compilerOptions": {
 		"module": "commonjs",
 		"outDir": "./dist",
-		"allowJs": true,
 		"target": "es6",
 		"sourceMap": true,
-		"moduleResolution": "node",
-		"resolveJsonModule": true
+		"moduleResolution": "node"
 	},
 	"include": [
 		"src/**/*"

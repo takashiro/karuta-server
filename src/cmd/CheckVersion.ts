@@ -1,4 +1,4 @@
-import * as version from '../core/version.json';
+import version from '../core/version';
 
 export default function CheckVersion() {
 	return version;
