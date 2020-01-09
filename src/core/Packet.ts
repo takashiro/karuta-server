@@ -1,6 +1,8 @@
 
 export default class Packet {
 	command: number;
+
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	arguments: any;
 
 	/**
