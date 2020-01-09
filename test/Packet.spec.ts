@@ -1,13 +1,12 @@
 
-const assert = require('assert');
-const Packet = require('../core/Packet');
+import Packet from '../src/core/Packet';
 
 describe('Packet', () => {
 	test('parses from an array', () => {
 		const data = [1, { a: 2 }];
 		const packet = Packet.parse(JSON.stringify(data));
-		assert.deepEqual(data[0], packet.command);
-		assert.deepEqual(data[1], packet.arguments);
+		expect(data[0]).toBe(packet.command);
+		expect(data[1]).toEqual(packet.arguments);
 	});
 
 	test('converted to string', () => {
@@ -16,7 +15,7 @@ describe('Packet', () => {
 		packet.arguments = { test: 3 };
 		const str = packet.toJSON();
 		const data = JSON.parse(str);
-		assert.deepEqual(packet.command, data[0]);
-		assert.deepEqual(packet.arguments, data[1]);
+		expect(packet.command).toBe(data[0]);
+		expect(packet.arguments).toEqual(data[1]);
 	});
 });

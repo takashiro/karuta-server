@@ -1,5 +1,6 @@
+import * as net from 'net';
 
-const net = require('net');
+import App from '../src/core/App';
 
 const localhost = '127.0.0.1';
 
@@ -24,7 +25,6 @@ describe('App', () => {
 
 	const port = Math.floor(Math.random() * 55536) + 10000;
 	test(`should be started at ${port}`, async () => {
-		const App = require('../core/App');
 		app = new App({ socket: { port, host: localhost } });
 		await app.start();
 	});

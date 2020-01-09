@@ -1,9 +1,11 @@
-const assert = require('assert');
-const WebSocket = require('ws');
+import * as WebSocket from 'ws';
 
-const App = require('../core/App');
-const User = require('../core/User');
-const cmd = require('../cmd');
+import App from '../src/core/App';
+import User from '../src/core/User';
+import Action from '../src/core/Action';
+
+import { Command as cmd } from '../src/cmd';
+import serverVersion from '../src/core/version';
 
 const localhost = '127.0.0.1';
 
@@ -15,8 +17,15 @@ function waitUntilConnected(socket) {
 }
 
 class GameDriver {
+	name: string;
+	a: object;
+
 	constructor() {
 		this.name = 'test driver';
+	}
+
+	getName() {
+		return this.name;
 	}
 
 	setConfig(config) {
@@ -27,6 +36,10 @@ class GameDriver {
 		return {
 			a: this.a,
 		};
+	}
+
+	getAction(command: number): Action {
+		return null;
 	}
 }
 
@@ -41,8 +54,8 @@ describe('Lobby', () => {
 
 	const serverUrl = `ws://${localhost}:${port}`;
 
-	let ws = null;
-	let user = null;
+	let ws: WebSocket = null;
+	let user: User = null;
 	test(`should connect to ${serverUrl}`, async () => {
 		ws = new WebSocket(serverUrl);
 		await waitUntilConnected(ws);
@@ -50,29 +63,28 @@ describe('Lobby', () => {
 
 	test('Client should be connected', async () => {
 		user = new User(ws);
-		assert(user.connected);
+		expect(user.connected).toBeTruthy();
 		user.id = await user.request(cmd.Login);
-		assert(user.id > 0);
+		expect(user.id).toBeGreaterThan(0);
 	});
 
 	test('Client checks server version', async () => {
 		const version = await user.request(cmd.CheckVersion);
-		const serverVersion = require('../core/version.json');
-		assert.deepEqual(version, serverVersion);
+		expect(version).toEqual(serverVersion);
 	});
 
 	let roomId = 0;
 	test('creates a room', async () => {
 		roomId = await user.request(cmd.CreateRoom);
-		assert(roomId > 0);
+		expect(roomId).toBeGreaterThan(0);
 	});
 
 	test('should have a new room', () => {
-		assert(app.lobby.rooms.size === 1);
-		assert(app.lobby.rooms.has(roomId));
+		expect(app.lobby.rooms.size).toBe(1);
+		expect(app.lobby.rooms.has(roomId)).toBeTruthy();
 	});
 
-	let user2 = null;
+	let user2: User = null;
 	test('comes another user', async () => {
 		const socket = new WebSocket(serverUrl);
 		await waitUntilConnected(socket);
@@ -81,7 +93,7 @@ describe('Lobby', () => {
 		user2.id = await user.request(cmd.Login);
 
 		const ret = await user2.request(cmd.EnterRoom, roomId);
-		assert(ret === roomId);
+		expect(ret).toBe(roomId);
 	});
 
 	test('unicast a command', async () => {
@@ -92,7 +104,7 @@ describe('Lobby', () => {
 		const serverUser = room.findUser(user.id);
 		serverUser.send(cmd.Speak, text);
 		const message = await reply;
-		assert(message === text);
+		expect(message).toBe(text);
 	});
 
 	const key = [2, 3, 9, 7];
@@ -101,23 +113,23 @@ describe('Lobby', () => {
 		const reply2 = user2.receive(cmd.SetUserList);
 
 		const room = lobby.findRoom(roomId);
-		assert(room);
+		expect(room).toBeTruthy();
 
 		room.broadcast(cmd.SetUserList, key);
 
 		const users1 = await reply1;
 		const users2 = await reply2;
-		assert.deepStrictEqual(users1, key);
-		assert.deepStrictEqual(users2, key);
+		expect(users1).toEqual(key);
+		expect(users2).toEqual(key);
 	});
 
 	test('updates room configuration', async () => {
 		const received = user2.receive(cmd.UpdateRoom);
 		user.send(cmd.UpdateRoom, { a: Math.floor(Math.random() * 0xFFFF) });
 		const room = await received;
-		assert(room.id === roomId);
-		assert(room.owner && room.owner.id === user.id);
-		assert(room.driver === null);
+		expect(room.id).toBe(roomId);
+		expect(room.owner.id).toBe(user.id);
+		expect(room.driver).toBeNull();
 	});
 
 	test('updates game driver configuration', async () => {
@@ -128,8 +140,8 @@ describe('Lobby', () => {
 		const received = user2.receive(cmd.UpdateRoom);
 		user.send(cmd.UpdateRoom, { a: salt });
 		const config = await received;
-		assert(config.driver);
-		assert(config.driver.a === salt);
+		expect(config.driver).toBeTruthy();
+		expect(config.driver.a).toBe(salt);
 	});
 
 	test('should stop the app', async () => {

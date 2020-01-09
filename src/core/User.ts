@@ -77,7 +77,8 @@ export default class User extends EventEmitter {
 	 * @param args
 	 * @return true iff. the command was sent
 	 */
-	send(command: number, args: object = null): boolean {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	send(command: number, args: any = null): boolean {
 		if (!this.socket) {
 			return false;
 		}
@@ -128,7 +129,7 @@ export default class User extends EventEmitter {
 	 * @return the promise that resolves user response
 	 */
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	request(command: number, args: object = null, timeout = 15000): Promise<any> {
+	request(command: number, args: any = null, timeout = 15000): Promise<any> {
 		const reply = this.receive(command, timeout);
 		this.send(command, args);
 		return reply;
