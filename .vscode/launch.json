@@ -8,10 +8,10 @@
 			"type": "node",
 			"request": "launch",
 			"name": "Launch Program",
-			"program": "${workspaceFolder}/src/app.ts",
-			"sourceMaps": true,
-			"outFiles": [
-				"${workspaceFolder}/dist/**/*.js"
+			"program": "${workspaceFolder}/dist/app.js",
+			"preLaunchTask": "npm: debug",
+			"skipFiles": [
+				"<node_internals>/**"
 			]
 		},
 		{
