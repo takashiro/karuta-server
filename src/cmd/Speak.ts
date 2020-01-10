@@ -1,13 +1,21 @@
-import { Command } from './index';
+import Action from '../net/Action';
+import Command from '../net/Command';
+import User from '../core/User';
 
-export default function Speak(message) {
-	const { room } = this;
-	if (!room) {
-		return;
+export default class Speak extends Action<string, void> {
+	constructor() {
+		super(Command.Speak);
 	}
 
-	room.broadcast(Command.Speak, {
-		user: this.id,
-		message,
-	});
+	async process(user: User, message: string): Promise<void> {
+		const { room } = user;
+		if (!room) {
+			return;
+		}
+
+		room.broadcast(Command.Speak, {
+			user: user.id,
+			message,
+		});
+	}
 }

@@ -1,14 +1,23 @@
+import Action from '../net/Action';
 
 import Room from '../core/Room';
+import User from '../core/User';
+import Command from '../net/Command';
 
-export default function CreateRoom() {
-	const { lobby } = this;
-	if (!lobby) {
-		return 0;
+export default class CreateRoom extends Action<void, number> {
+	constructor() {
+		super(Command.CreateRoom);
 	}
 
-	const room = new Room(this);
-	lobby.addRoom(room);
+	async process(user: User): Promise<number> {
+		const { lobby } = user;
+		if (!lobby) {
+			return 0;
+		}
 
-	return room.id;
+		const room = new Room(user);
+		lobby.addRoom(room);
+
+		return room.id;
+	}
 }

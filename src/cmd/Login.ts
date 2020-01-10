@@ -1,8 +1,21 @@
+import Action from '../net/Action';
+import Command from '../net/Command';
+import User from '../core/User';
 
-export default function Login(credential) {
-	// TO-DO
-	if (credential) {
-		this.name = credential.name;
+interface Credential {
+	name: string;
+}
+
+export default class Login extends Action<Credential, number> {
+	constructor() {
+		super(Command.Login);
 	}
-	return this.id;
+
+	async process(user: User, credential: Credential): Promise<number> {
+		// TO-DO
+		if (credential) {
+			user.name = credential.name;
+		}
+		return user.id;
+	}
 }

@@ -11,6 +11,8 @@ type Action = (args: any) => void;
 export default class User extends EventEmitter {
 	id: number;
 
+	name: string;
+
 	lobby: Lobby;
 
 	room: Room;

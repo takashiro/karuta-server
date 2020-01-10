@@ -17,6 +17,7 @@
 		"@typescript-eslint"
 	],
 	"rules": {
+		"class-methods-use-this": "off",
 		"indent": [
 			"error",
 			"tab"

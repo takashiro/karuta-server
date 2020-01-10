@@ -1,7 +1,16 @@
+import Action from '../net/Action';
+import User from '../core/User';
+import Command from '../net/Command';
 
-export default function LeaveRoom() {
-	const { room } = this;
-	if (room) {
-		room.removeUser(this);
+export default class LeaveRoom extends Action<void, void> {
+	constructor() {
+		super(Command.LeaveRoom);
+	}
+
+	async process(user: User): Promise<void> {
+		const { room } = user;
+		if (room) {
+			room.removeUser(user);
+		}
 	}
 }

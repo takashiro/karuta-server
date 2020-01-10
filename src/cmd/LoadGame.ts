@@ -1,11 +1,19 @@
+import Action from '../net/Action';
+import Command from '../net/Command';
+import User from '../core/User';
 
-// LoadGame
-export default function LoadGame(driver) {
-	const { room } = this;
-	if (!room || room.owner !== this) {
-		return null;
+export default class LoadGame extends Action<string, string | null> {
+	constructor() {
+		super(Command.LoadGame);
 	}
 
-	const loaded = room.loadExtension(driver);
-	return loaded ? driver : null;
+	async process(user: User, driver: string): Promise<string | null> {
+		const { room } = user;
+		if (!room || room.owner !== user) {
+			return null;
+		}
+
+		const loaded = room.loadExtension(driver);
+		return loaded ? driver : null;
+	}
 }
