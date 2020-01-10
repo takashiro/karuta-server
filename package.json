@@ -7,8 +7,8 @@
     "start": "node dist/app.js",
     "build": "webpack",
     "debug": "webpack --mode=development",
-    "lint": "eslint .",
-    "test": "eslint . && jest"
+    "lint": "eslint --ext .ts .",
+    "test": "npm run lint && jest"
   },
   "repository": {
     "type": "git",

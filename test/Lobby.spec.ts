@@ -9,36 +9,42 @@ import serverVersion from '../src/core/version';
 
 const localhost = '127.0.0.1';
 
-function waitUntilConnected(socket) {
+function waitUntilConnected(socket: WebSocket): Promise<void> {
 	return new Promise(((resolve, reject) => {
 		socket.once('open', resolve);
 		socket.once('close', reject);
 	}));
 }
 
+interface Config {
+	a: string;
+}
+
 class GameDriver {
 	name: string;
-	a: object;
+
+	a: string;
 
 	constructor() {
 		this.name = 'test driver';
 	}
 
-	getName() {
+	getName(): string {
 		return this.name;
 	}
 
-	setConfig(config) {
+	setConfig(config: Config): void {
 		this.a = config.a;
 	}
 
-	getConfig() {
+	getConfig(): Config {
 		return {
 			a: this.a,
 		};
 	}
 
 	getAction(command: number): Action {
+		this.a = String(command);
 		return null;
 	}
 }

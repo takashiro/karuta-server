@@ -33,7 +33,8 @@
 		"no-restricted-syntax": [
 			"error",
 			"WithStatement"
-		]
+		],
+		"no-undef": "off"
 	},
 	"settings": {
 		"import/resolver": {
