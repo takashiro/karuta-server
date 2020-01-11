@@ -1,4 +1,4 @@
-import * as WebSocket from 'ws';
+import WebSocket from 'ws';
 
 import App from '../src/core/App';
 import User from '../src/core/User';

@@ -5,6 +5,7 @@
 		"target": "es6",
 		"sourceMap": true,
 		"moduleResolution": "node",
+		"esModuleInterop": true,
 		"strict": true
 	},
 	"include": [

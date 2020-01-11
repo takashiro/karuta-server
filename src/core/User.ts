@@ -1,5 +1,5 @@
-import * as EventEmitter from 'events';
-import * as WebSocket from 'ws';
+import EventEmitter from 'events';
+import WebSocket from 'ws';
 
 import Packet from './Packet';
 import Lobby from './Lobby';
