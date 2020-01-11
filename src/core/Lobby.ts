@@ -36,7 +36,7 @@ export default class Lobby {
 	 * Find a room by room id
 	 * @param id room id
 	 */
-	findRoom(id: number): Room {
+	findRoom(id: number): Room | undefined {
 		return this.rooms.get(id);
 	}
 
@@ -65,7 +65,7 @@ export default class Lobby {
 	 * Find a user by user id
 	 * @param id user id
 	 */
-	findUser(id: number): User {
+	findUser(id: number): User | undefined {
 		return this.users.get(id);
 	}
 
