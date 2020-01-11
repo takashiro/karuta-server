@@ -8,7 +8,7 @@ export default class Room extends EventEmitter {
 
 	owner: User;
 
-	driver: Driver;
+	driver: Driver | null;
 
 	users: Set<User>;
 
@@ -31,7 +31,7 @@ export default class Room extends EventEmitter {
 	 * Find a user by user id
 	 * @param id user id
 	 */
-	findUser(id: number): User {
+	findUser(id: number): User | null {
 		for (const user of this.users) {
 			if (user.id === id) {
 				return user;
@@ -106,20 +106,16 @@ export default class Room extends EventEmitter {
 	 * Getter of room configuration
 	 */
 	getConfig(): object {
-		const config = {
+		return {
 			id: this.id,
 			owner: {
 				id: this.owner.id,
 			},
-			driver: null,
+			driver: this.driver && this.driver.getConfig ? {
+				...this.driver.getConfig(),
+				name: this.driver.getName(),
+			} : null,
 		};
-
-		if (this.driver && this.driver.getConfig) {
-			config.driver = this.driver.getConfig();
-			config.driver.name = this.driver.getName();
-		}
-
-		return config;
 	}
 
 	/**
