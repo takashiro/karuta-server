@@ -112,18 +112,21 @@ export default class User extends EventEmitter {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	receive(command: number, timeout = 15000): Promise<any> {
 		return new Promise((resolve, reject) => {
+			let timer: NodeJS.Timeout | null = null;
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const resolver: (args: any) => void = (args: any) => {
-				clearTimeout(timer);
 				resolve(args);
-			};
 
-			const timer = setTimeout(() => {
+				if (timer) {
+					clearTimeout(timer);
+				}
+			};
+			this.bindOnce(command, resolver);
+
+			timer = setTimeout(() => {
 				this.unbind(command, resolver);
 				reject();
 			}, timeout);
-
-			this.bindOnce(command, resolver);
 		});
 	}
 
