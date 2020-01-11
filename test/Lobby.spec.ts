@@ -2,9 +2,9 @@ import WebSocket from 'ws';
 
 import App from '../src/core/App';
 import User from '../src/core/User';
-import Action from '../src/core/Action';
+import Action from '../src/net/Action';
 
-import { Command as cmd } from '../src/cmd';
+import cmd from '../src/net/Command';
 import serverVersion from '../src/core/version';
 
 const localhost = '127.0.0.1';
@@ -43,7 +43,7 @@ class GameDriver {
 		};
 	}
 
-	getAction(command: number): Action {
+	getAction(command: number): Action<void, void> {
 		this.a = String(command);
 		return null;
 	}
