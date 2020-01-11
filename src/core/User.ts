@@ -158,7 +158,7 @@ export default class User extends EventEmitter {
 
 	/**
 	 * Disconnect current socket and set a new one
-	 * @param {WebSocket | null} socket
+	 * @param socket
 	 */
 	setSocket(socket: WebSocket | null): void {
 		if (this.socket) {

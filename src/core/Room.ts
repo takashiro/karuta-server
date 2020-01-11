@@ -63,7 +63,7 @@ export default class Room extends EventEmitter {
 
 	/**
 	 * Remove a user from this room
-	 * @param {User} user
+	 * @param user
 	 */
 	removeUser(user: User): void {
 		user.room = null;
@@ -130,8 +130,7 @@ export default class Room extends EventEmitter {
 
 	/**
 	 * Load game extension
-	 * @param {string} name driver name
-	 * @return {boolean}
+	 * @param name driver name
 	 */
 	loadExtension(name: string): boolean {
 		try {
