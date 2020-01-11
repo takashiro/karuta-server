@@ -8,8 +8,8 @@ export default class UpdateRoom extends Action<object, void> {
 	}
 
 	async process(user: User, config: object): Promise<void> {
-		const { room } = user;
-		if (!room || room.owner !== user) {
+		const room = user.getRoom();
+		if (!room || room.getOwner() !== user) {
 			return;
 		}
 

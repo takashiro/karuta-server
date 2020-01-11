@@ -1,7 +1,8 @@
-import Command from './Command';
-import User from '../core/User';
+import { Action as ActionInterface, User } from '@karuta/core';
 
-abstract class Action<Request, Response> {
+import Command from './Command';
+
+abstract class Action<Request, Response> implements ActionInterface<Request, Response> {
 	command: Command;
 
 	constructor(command: Command) {

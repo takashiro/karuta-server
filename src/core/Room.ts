@@ -1,9 +1,9 @@
 import { EventEmitter } from 'events';
 
+import { Driver, Room as RoomInterface } from '@karuta/core';
 import User from './User';
-import Driver from './Driver';
 
-export default class Room extends EventEmitter {
+export default class Room extends EventEmitter implements RoomInterface {
 	id: number;
 
 	owner: User;
@@ -25,6 +25,20 @@ export default class Room extends EventEmitter {
 
 		this.users = new Set();
 		this.addUser(owner);
+	}
+
+	/**
+	 * @return The driver loaded in this room
+	 */
+	getDriver(): Driver | null {
+		return this.driver;
+	}
+
+	/**
+	 * @return Room owner
+	 */
+	getOwner(): User {
+		return this.owner;
 	}
 
 	/**
@@ -52,8 +66,9 @@ export default class Room extends EventEmitter {
 	 * @param user
 	 */
 	addUser(user: User): void {
-		if (user.room) {
-			user.room.removeUser(user);
+		const room = user.getRoom();
+		if (room) {
+			room.removeUser(user);
 		}
 		user.room = this;
 		this.users.add(user);
@@ -119,7 +134,7 @@ export default class Room extends EventEmitter {
 	}
 
 	/**
-	 * Setter of room configuration
+	 * Update room configuration
 	 * @param config
 	 */
 	updateConfig(config: object): void {
@@ -129,10 +144,10 @@ export default class Room extends EventEmitter {
 	}
 
 	/**
-	 * Load game extension
+	 * Load a driver from ./extension/.
 	 * @param name driver name
 	 */
-	loadExtension(name: string): boolean {
+	loadDriver(name: string): boolean {
 		try {
 			// eslint-disable-next-line @typescript-eslint/no-var-requires
 			const GameDriver = require(`../extension/${name}`);

@@ -69,7 +69,7 @@ describe('Lobby', () => {
 
 	test('Client should be connected', async () => {
 		user = new User(ws);
-		expect(user.connected).toBeTruthy();
+		expect(user.isConnected()).toBeTruthy();
 		user.id = await user.request(cmd.Login);
 		expect(user.id).toBeGreaterThan(0);
 	});

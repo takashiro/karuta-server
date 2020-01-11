@@ -1,20 +1,20 @@
 import EventEmitter from 'events';
 import WebSocket from 'ws';
 
+import {
+	Room,
+	Driver,
+	User as UserInterface,
+	UserProfile,
+} from '@karuta/core';
+
 import Packet from './Packet';
 import Lobby from './Lobby';
-import Room from './Room';
-import Driver from './Driver';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Action = (args: any) => void;
 
-interface BriefIntroduction {
-	id: number;
-	name: string | undefined;
-}
-
-export default class User extends EventEmitter {
+export default class User extends EventEmitter implements UserInterface {
 	id: number;
 
 	name: string | undefined;
@@ -59,20 +59,20 @@ export default class User extends EventEmitter {
 	 * Gets the driver in the room
 	 */
 	getDriver(): Driver | null {
-		return this.room && this.room.driver;
+		return this.room && this.room.getDriver();
 	}
 
 	/**
 	 * @return whether the user is connected
 	 */
-	get connected(): boolean {
+	isConnected(): boolean {
 		return Boolean(this.socket && this.socket.readyState === WebSocket.OPEN);
 	}
 
 	/**
 	 * @return brief infomation
 	 */
-	get briefInfo(): BriefIntroduction {
+	getProfile(): UserProfile {
 		return {
 			id: this.id,
 			name: this.name,

@@ -26,6 +26,7 @@
   },
   "homepage": "https://github.com/takashiro/karuta-node-server#readme",
   "dependencies": {
+    "@karuta/core": "^0.1.0",
     "ws": "^4.1.0"
   },
   "devDependencies": {

@@ -8,12 +8,12 @@ export default class LoadGame extends Action<string, string | null> {
 	}
 
 	async process(user: User, driver: string): Promise<string | null> {
-		const { room } = user;
-		if (!room || room.owner !== user) {
+		const room = user.getRoom();
+		if (!room || room.getOwner() !== user) {
 			return null;
 		}
 
-		const loaded = room.loadExtension(driver);
+		const loaded = room.loadDriver(driver);
 		return loaded ? driver : null;
 	}
 }
