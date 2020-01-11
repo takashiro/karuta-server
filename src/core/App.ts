@@ -2,21 +2,24 @@
 import * as http from 'http';
 import * as WebSocket from 'ws';
 
-import { CommandMap as actions } from '../cmd';
+import Action from '../net/Action';
+
 import Lobby from './Lobby';
 import User from './User';
-
-import defaultConfig from '../defaultConfig';
 import Packet from './Packet';
 import Config from './Config';
 
-async function userListener(packet: Packet): Promise<void> {
-	let action = null;
+import defaultConfig from '../defaultConfig';
+import actions from '../cmd';
+
+async function handleUserAction(user: User, packet: Packet): Promise<void> {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	let action: Action<any, any> | undefined;
 	if (packet.command < 0) {
 		action = actions.get(packet.command);
 	} else if (packet.command > 0) {
-		const driver = this.getDriver();
-		if (driver && driver.getAction) {
+		const driver = user.getDriver();
+		if (driver) {
 			try {
 				action = driver.getAction(packet.command);
 			} catch (error) {
@@ -26,19 +29,19 @@ async function userListener(packet: Packet): Promise<void> {
 	}
 
 	if (action) {
-		const ret = await action.call(this, packet.arguments);
+		const ret = await action.process(user, packet.arguments);
 		if (ret !== undefined) {
-			this.send(packet.command, ret);
+			user.send(packet.command, ret);
 		}
 	} else {
 		// This should be a reply.
 	}
 }
 
-function lobbyListener(socket: WebSocket): void {
+function handleNewConnection(lobby: Lobby, socket: WebSocket): void {
 	const user = new User(socket);
-	user.on('action', userListener.bind(user));
-	this.addUser(user);
+	user.on('action', (packet) => handleUserAction(user, packet));
+	lobby.addUser(user);
 }
 
 export default class App {
@@ -50,12 +53,12 @@ export default class App {
 
 	wss: WebSocket.Server;
 
-	constructor(config) {
+	constructor(config: object) {
 		this.config = { ...defaultConfig, ...config };
 		this.lobby = new Lobby();
 		this.server = http.createServer();
 		this.wss = new WebSocket.Server({ server: this.server });
-		this.wss.on('connection', lobbyListener.bind(this.lobby));
+		this.wss.on('connection', (socket) => handleNewConnection(this.lobby, socket));
 	}
 
 	/**
