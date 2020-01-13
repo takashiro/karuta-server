@@ -2,13 +2,13 @@ import User from './User';
 import Room from './Room';
 
 export default class Lobby {
-	users: Map<number, User>;
+	protected users: Map<number, User>;
 
-	nextUserId: number;
+	protected nextUserId: number;
 
-	rooms: Map<number, Room>;
+	protected rooms: Map<number, Room>;
 
-	nextRoomId: number;
+	protected nextRoomId: number;
 
 	/**
 	 * Create a new instance of Server
