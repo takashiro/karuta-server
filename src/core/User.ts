@@ -15,15 +15,15 @@ import Lobby from './Lobby';
 type Action = (args: any) => void;
 
 export default class User extends EventEmitter implements UserInterface {
-	id: number;
+	protected id: number;
 
-	name: string | undefined;
+	protected name: string | undefined;
 
-	lobby: Lobby | null;
+	protected lobby: Lobby | null;
 
-	room: Room | null;
+	protected room: Room | null;
 
-	socket: WebSocket | null;
+	protected socket: WebSocket | null;
 
 	/**
 	 * Create a new instance of User
@@ -40,6 +40,22 @@ export default class User extends EventEmitter implements UserInterface {
 		this.setSocket(socket);
 	}
 
+	getId(): number {
+		return this.id;
+	}
+
+	setId(id: number): void {
+		this.id = id;
+	}
+
+	getName(): string | undefined {
+		return this.name;
+	}
+
+	setName(name: string): void {
+		this.name = name;
+	}
+
 	/**
 	 * Gets the current room
 	 */
@@ -53,6 +69,21 @@ export default class User extends EventEmitter implements UserInterface {
 	 */
 	setRoom(room: Room | null): void {
 		this.room = room;
+	}
+
+	/**
+	 * Gets game lobby
+	 */
+	getLobby(): Lobby | null {
+		return this.lobby;
+	}
+
+	/**
+	 * Sets game lobby
+	 * @param lobby
+	 */
+	setLobby(lobby: Lobby): void {
+		this.lobby = lobby;
 	}
 
 	/**

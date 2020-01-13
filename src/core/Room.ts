@@ -47,7 +47,7 @@ export default class Room extends EventEmitter implements RoomInterface {
 	 */
 	findUser(id: number): User | null {
 		for (const user of this.users) {
-			if (user.id === id) {
+			if (user.getId() === id) {
 				return user;
 			}
 		}
@@ -70,7 +70,7 @@ export default class Room extends EventEmitter implements RoomInterface {
 		if (room) {
 			room.removeUser(user);
 		}
-		user.room = this;
+		user.setRoom(this);
 		this.users.add(user);
 
 		user.on('close', () => this.removeUser(user));
@@ -81,7 +81,7 @@ export default class Room extends EventEmitter implements RoomInterface {
 	 * @param user
 	 */
 	removeUser(user: User): void {
-		user.room = null;
+		user.setRoom(null);
 		this.users.delete(user);
 
 		if (this.users.size <= 0) {
@@ -124,7 +124,7 @@ export default class Room extends EventEmitter implements RoomInterface {
 		return {
 			id: this.id,
 			owner: {
-				id: this.owner.id,
+				id: this.owner.getId(),
 			},
 			driver: this.driver && this.driver.getConfig ? {
 				...this.driver.getConfig(),

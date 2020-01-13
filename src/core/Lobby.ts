@@ -54,11 +54,11 @@ export default class Lobby {
 	 */
 	addUser(user: User): void {
 		this.nextUserId++;
-		user.id = this.nextUserId;
-		user.lobby = this;
+		user.setId(this.nextUserId);
+		user.setLobby(this);
 
-		this.users.set(user.id, user);
-		user.on('close', () => this.removeUser(user.id));
+		this.users.set(user.getId(), user);
+		user.on('close', () => this.removeUser(user.getId()));
 	}
 
 	/**

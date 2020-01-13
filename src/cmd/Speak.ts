@@ -8,13 +8,13 @@ export default class Speak extends Action<string, void> {
 	}
 
 	async process(user: User, message: string): Promise<void> {
-		const { room } = user;
+		const room = user.getRoom();
 		if (!room) {
 			return;
 		}
 
 		room.broadcast(Command.Speak, {
-			user: user.id,
+			user: user.getId(),
 			message,
 		});
 	}

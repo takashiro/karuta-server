@@ -14,8 +14,8 @@ export default class Login extends Action<Credential, number> {
 	async process(user: User, credential: Credential): Promise<number> {
 		// TO-DO
 		if (credential) {
-			user.name = credential.name;
+			user.setName(credential.name);
 		}
-		return user.id;
+		return user.getId();
 	}
 }

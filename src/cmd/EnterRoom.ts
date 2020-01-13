@@ -8,7 +8,7 @@ export default class EnterRoom extends Action<number, number> {
 	}
 
 	async process(user: User, id: number): Promise<number> {
-		const { lobby } = user;
+		const lobby = user.getLobby();
 		if (!lobby) {
 			return -1;
 		}

@@ -10,7 +10,7 @@ export default class CreateRoom extends Action<void, number> {
 	}
 
 	async process(user: User): Promise<number> {
-		const { lobby } = user;
+		const lobby = user.getLobby();
 		if (!lobby) {
 			return 0;
 		}

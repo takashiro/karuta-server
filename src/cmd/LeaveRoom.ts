@@ -8,7 +8,7 @@ export default class LeaveRoom extends Action<void, void> {
 	}
 
 	async process(user: User): Promise<void> {
-		const { room } = user;
+		const room = user.getRoom();
 		if (room) {
 			room.removeUser(user);
 		}
