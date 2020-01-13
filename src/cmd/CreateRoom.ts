@@ -18,6 +18,6 @@ export default class CreateRoom extends Action<void, number> {
 		const room = new Room(user);
 		lobby.addRoom(room);
 
-		return room.id;
+		return room.getId();
 	}
 }

@@ -4,13 +4,13 @@ import { Driver, Room as RoomInterface } from '@karuta/core';
 import User from './User';
 
 export default class Room extends EventEmitter implements RoomInterface {
-	id: number;
+	protected id: number;
 
-	owner: User;
+	protected owner: User;
 
-	driver: Driver | null;
+	protected driver: Driver | null;
 
-	users: Set<User>;
+	protected users: Set<User>;
 
 	/**
 	 * Create a new instance of Room
@@ -25,6 +25,21 @@ export default class Room extends EventEmitter implements RoomInterface {
 
 		this.users = new Set();
 		this.addUser(owner);
+	}
+
+	/**
+	 * Gets room id
+	 */
+	getId(): number {
+		return this.id;
+	}
+
+	/**
+	 * Sets room id
+	 * @param id
+	 */
+	setId(id: number): void {
+		this.id = id;
 	}
 
 	/**

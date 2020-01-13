@@ -16,7 +16,7 @@ export default class EnterRoom extends Action<number, number> {
 		const room = lobby.findRoom(id);
 		if (room) {
 			room.addUser(user);
-			return room.id;
+			return room.getId();
 		}
 		return -1;
 	}

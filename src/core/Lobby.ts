@@ -26,10 +26,10 @@ export default class Lobby {
 	 */
 	addRoom(room: Room): void {
 		this.nextRoomId++;
-		room.id = this.nextRoomId;
-		this.rooms.set(room.id, room);
+		room.setId(this.nextRoomId);
+		this.rooms.set(room.getId(), room);
 
-		room.once('close', () => this.removeRoom(room.id));
+		room.once('close', () => this.removeRoom(room.getId()));
 	}
 
 	/**
