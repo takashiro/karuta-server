@@ -9,11 +9,7 @@ module.exports = {
 	],
 	coverageDirectory: 'build',
 	testEnvironment: 'node',
-	globals: {
-		'ts-jest': {
-			tsConfig: {
-				strict: false,
-			},
-		},
+	transform: {
+		'\.js$': 'ts-jest',
 	},
 };

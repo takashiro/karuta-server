@@ -164,7 +164,7 @@ export default class Room extends EventEmitter implements RoomInterface {
 	 */
 	loadDriver(name: string): boolean {
 		try {
-			// eslint-disable-next-line @typescript-eslint/no-var-requires
+			// eslint-disable-next-line @typescript-eslint/no-var-requires, import/no-dynamic-require
 			const GameDriver = require(`../extension/${name}`);
 			this.driver = new GameDriver(this);
 			return true;

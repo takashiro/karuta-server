@@ -9,41 +9,33 @@ import serverVersion from '../src/core/version';
 
 const localhost = '127.0.0.1';
 
-function waitUntilConnected(socket: WebSocket): Promise<void> {
+function waitUntilConnected(socket) {
 	return new Promise(((resolve, reject) => {
 		socket.once('open', resolve);
 		socket.once('close', reject);
 	}));
 }
 
-interface Config {
-	a: string;
-}
-
 class GameDriver {
-	name: string;
-
-	a: string;
-
 	constructor() {
 		this.name = 'test driver';
 	}
 
-	getName(): string {
+	getName() {
 		return this.name;
 	}
 
-	setConfig(config: Config): void {
+	setConfig(config) {
 		this.a = config.a;
 	}
 
-	getConfig(): Config {
+	getConfig() {
 		return {
 			a: this.a,
 		};
 	}
 
-	getAction(command: number): Action<void, void> {
+	getAction(command) {
 		this.a = String(command);
 		return null;
 	}
@@ -60,8 +52,8 @@ describe('Lobby', () => {
 
 	const serverUrl = `ws://${localhost}:${port}`;
 
-	let ws: WebSocket = null;
-	let user: User = null;
+	let ws = null;
+	let user = null;
 	test(`should connect to ${serverUrl}`, async () => {
 		ws = new WebSocket(serverUrl);
 		await waitUntilConnected(ws);
@@ -86,17 +78,18 @@ describe('Lobby', () => {
 	});
 
 	test('should have a new room', () => {
-		expect(app.lobby.rooms.size).toBe(1);
-		expect(app.lobby.rooms.has(roomId)).toBeTruthy();
+		const rooms = app.lobby.getRooms();
+		expect(rooms.length).toBe(1);
+		expect(app.lobby.findRoom(roomId)).toBeTruthy();
 	});
 
-	let user2: User = null;
+	let user2 = null;
 	test('comes another user', async () => {
 		const socket = new WebSocket(serverUrl);
 		await waitUntilConnected(socket);
 
 		user2 = new User(socket);
-		user2.id = await user.request(cmd.Login);
+		user2.setId(await user.request(cmd.Login));
 
 		const ret = await user2.request(cmd.EnterRoom, roomId);
 		expect(ret).toBe(roomId);
@@ -107,7 +100,7 @@ describe('Lobby', () => {
 
 		const reply = user.receive(cmd.Speak);
 		const room = lobby.findRoom(roomId);
-		const serverUser = room.findUser(user.id);
+		const serverUser = room.findUser(user.getId());
 		serverUser.send(cmd.Speak, text);
 		const message = await reply;
 		expect(message).toBe(text);
@@ -134,7 +127,7 @@ describe('Lobby', () => {
 		user.send(cmd.UpdateRoom, { a: Math.floor(Math.random() * 0xFFFF) });
 		const room = await received;
 		expect(room.id).toBe(roomId);
-		expect(room.owner.id).toBe(user.id);
+		expect(room.owner.id).toBe(user.getId());
 		expect(room.driver).toBeNull();
 	});
 

@@ -29,7 +29,16 @@
 		"no-plusplus": "off",
 		"no-param-reassign": "off",
 		"global-require": "off",
-		"import/no-dynamic-require": "off",
+		"import/extensions": [
+			"error",
+			"ignorePackages",
+			{
+				"ts": "never",
+				"tsx": "never",
+				"js": "never",
+				"jsx": "never"
+			}
+		],
 		"func-names": "off",
 		"no-restricted-syntax": [
 			"error",
@@ -40,7 +49,9 @@
 	"settings": {
 		"import/resolver": {
 			"node": {
-				"extensions": [".ts"]
+				"extensions": [
+					".ts"
+				]
 			}
 		}
 	}

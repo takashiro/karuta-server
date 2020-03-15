@@ -4,7 +4,7 @@ import App from '../src/core/App';
 
 const localhost = '127.0.0.1';
 
-function occupyPort(port: number): Promise<void> {
+function occupyPort(port) {
 	const server = net.createServer((socket) => {
 		socket.write('This is a test');
 	});

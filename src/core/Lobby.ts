@@ -49,6 +49,13 @@ export default class Lobby {
 	}
 
 	/**
+	 * @return all rooms
+	 */
+	getRooms(): Room[] {
+		return Array.from(this.rooms.values());
+	}
+
+	/**
 	 * Add a new connected user and assign user id
 	 * @param user the user instance
 	 */
