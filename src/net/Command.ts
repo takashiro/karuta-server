@@ -1,4 +1,3 @@
-
 /**
  * System command between server and clients
  */

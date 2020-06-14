@@ -1,4 +1,3 @@
-
 interface Config {
 	socket: string | number;
 }
