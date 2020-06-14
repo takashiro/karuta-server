@@ -1,4 +1,3 @@
-
 export default class Packet {
 	command: number;
 
