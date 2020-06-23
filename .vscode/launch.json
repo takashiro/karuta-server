@@ -7,9 +7,11 @@
 		{
 			"type": "node",
 			"request": "launch",
-			"name": "Launch Program",
-			"program": "${workspaceFolder}/dist/app.js",
-			"preLaunchTask": "npm: debug",
+			"name": "Launch",
+			"program": "${workspaceFolder}/src/app.ts",
+			"outFiles": [
+				"${workspaceFolder}/dist/**/*.js"
+			],
 			"skipFiles": [
 				"<node_internals>/**"
 			]

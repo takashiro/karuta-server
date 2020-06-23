@@ -5,8 +5,7 @@
   "main": "src/app.js",
   "scripts": {
     "start": "node dist/app.js",
-    "build": "webpack",
-    "debug": "webpack --mode=development",
+    "build": "tsc",
     "lint": "eslint --ext .ts .",
     "test": "npm run lint && jest"
   },
@@ -40,9 +39,6 @@
     "eslint-plugin-import": "^2.21.2",
     "jest": "^26.0.1",
     "ts-jest": "^26.1.0",
-    "ts-loader": "^7.0.5",
-    "typescript": "^3.9.5",
-    "webpack": "^4.43.0",
-    "webpack-cli": "^3.3.11"
+    "typescript": "^3.9.5"
   }
 }
