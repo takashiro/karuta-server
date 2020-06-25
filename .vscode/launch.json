@@ -17,13 +17,28 @@
 			]
 		},
 		{
-			"name": "Debug Jest Tests",
+			"type": "node",
+			"request": "launch",
+			"name": "Build & Launch",
+			"program": "${workspaceFolder}/src/app.ts",
+			"outFiles": [
+				"${workspaceFolder}/dist/**/*.js"
+			],
+			"skipFiles": [
+				"<node_internals>/**"
+			],
+			"preLaunchTask": "npm: build"
+		},
+		{
+			"name": "Debug Test",
 			"type": "node",
 			"request": "launch",
 			"runtimeArgs": [
 				"--inspect-brk",
 				"${workspaceRoot}/node_modules/jest/bin/jest.js",
-				"--runInBand"
+				"--runInBand",
+				"--coverage=false",
+				"${fileBasenameNoExtension}"
 			],
 			"console": "integratedTerminal",
 			"internalConsoleOptions": "neverOpen",
