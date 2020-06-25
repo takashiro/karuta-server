@@ -1,7 +1,11 @@
 import { EventEmitter } from 'events';
 
-import { Driver, Room as RoomInterface } from '@karuta/core';
+import {
+	Driver,
+	Room as RoomInterface,
+} from '@karuta/core';
 import User from './User';
+import DriverLoader from './DriverLoader';
 
 export default class Room extends EventEmitter implements RoomInterface {
 	protected id: number;
@@ -163,9 +167,13 @@ export default class Room extends EventEmitter implements RoomInterface {
 	 * @param name driver name
 	 */
 	loadDriver(name: string): boolean {
+		const loader = new DriverLoader(name);
+		if (!loader.isValid()) {
+			return false;
+		}
+
 		try {
-			// eslint-disable-next-line @typescript-eslint/no-var-requires, import/no-dynamic-require
-			const GameDriver = require(`../extension/${name}`);
+			const GameDriver = loader.load();
 			this.driver = new GameDriver(this);
 			return true;
 		} catch (error) {

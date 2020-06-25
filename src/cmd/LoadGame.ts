@@ -13,6 +13,10 @@ export default class LoadGame extends Action<string, string | null> {
 			return null;
 		}
 
+		if (!driver.match(/^(@[\w-]+\/)?[\w-]+$/)) {
+			return null;
+		}
+
 		const loaded = room.loadDriver(driver);
 		return loaded ? driver : null;
 	}
