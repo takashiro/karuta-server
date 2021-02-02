@@ -27,7 +27,7 @@
 			"skipFiles": [
 				"<node_internals>/**"
 			],
-			"preLaunchTask": "npm: build"
+			"preLaunchTask": "npm: debug"
 		},
 		{
 			"name": "Debug Test",

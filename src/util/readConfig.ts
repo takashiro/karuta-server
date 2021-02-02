@@ -1,12 +1,15 @@
 import fs from 'fs';
 import util from 'util';
 
+import Config from '../core/Config';
+import defaultConfig from '../defaultConfig';
+
 const readFile = util.promisify(fs.readFile);
 
 /**
  * Read configuration from config.json in current working directory.
  */
-export default async function readConfig(): Promise<object> {
+export default async function readConfig(): Promise<Config> {
 	let configFile = './config.json';
 	for (const argv of process.argv) {
 		if (argv.startsWith('--config=')) {
@@ -21,5 +24,5 @@ export default async function readConfig(): Promise<object> {
 		console.log(error);
 	}
 
-	return {};
+	return defaultConfig;
 }

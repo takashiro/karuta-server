@@ -52,7 +52,7 @@ export default class App {
 
 	wss: WebSocket.Server;
 
-	constructor(config: object) {
+	constructor(config: Config) {
 		this.config = { ...defaultConfig, ...config };
 		this.lobby = new Lobby();
 		this.server = http.createServer();
@@ -75,7 +75,7 @@ export default class App {
 	async stop(): Promise<void> {
 		await this.lobby.close();
 
-		await new Promise((resolve, reject) => {
+		await new Promise<void>((resolve, reject) => {
 			this.server.close((err) => {
 				if (err) {
 					reject(err);

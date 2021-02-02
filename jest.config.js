@@ -10,6 +10,6 @@ module.exports = {
 	coverageDirectory: 'build',
 	testEnvironment: 'node',
 	transform: {
-		'\.js$': 'ts-jest',
+		'.js$': 'ts-jest',
 	},
 };

@@ -1,4 +1,3 @@
-
 import Packet from '../src/core/Packet';
 
 describe('Packet', () => {

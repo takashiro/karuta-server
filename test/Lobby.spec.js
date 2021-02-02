@@ -2,7 +2,6 @@ import WebSocket from 'ws';
 
 import App from '../src/core/App';
 import User from '../src/core/User';
-import Action from '../src/net/Action';
 
 import cmd from '../src/net/Command';
 import serverVersion from '../src/core/version';

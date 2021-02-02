@@ -139,7 +139,7 @@ export default class Room extends EventEmitter implements RoomInterface {
 	/**
 	 * Getter of room configuration
 	 */
-	getConfig(): object {
+	getConfig(): unknown {
 		return {
 			id: this.id,
 			owner: {
@@ -156,7 +156,7 @@ export default class Room extends EventEmitter implements RoomInterface {
 	 * Update room configuration
 	 * @param config
 	 */
-	updateConfig(config: object): void {
+	updateConfig(config: unknown): void {
 		if (this.driver && this.driver.setConfig) {
 			this.driver.setConfig(config);
 		}
