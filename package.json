@@ -1,6 +1,6 @@
 {
   "name": "@karuta/server",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Karuta Server (Node.js)",
   "main": "src/index.js",
   "bin": {
