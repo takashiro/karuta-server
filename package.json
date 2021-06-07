@@ -2,9 +2,12 @@
   "name": "@karuta/server",
   "version": "0.1.0",
   "description": "Karuta Server (Node.js)",
-  "main": "src/app.js",
+  "main": "src/index.js",
+  "bin": {
+    "karuta-server": "dist/cli.js"
+  },
   "scripts": {
-    "start": "node dist/app.js",
+    "start": "node dist/cli.js",
     "build": "npm run clean && tsc",
     "debug": "tsc --incremental --sourceMap",
     "clean": "rimraf dist",
