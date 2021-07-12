@@ -1,4 +1,5 @@
 import path from 'path';
+
 import DriverLoader from '../src/core/DriverLoader';
 
 it('resolves entry script', () => {

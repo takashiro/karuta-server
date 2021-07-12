@@ -1,7 +1,10 @@
-import User from './User';
-import Room from './Room';
+import {
+	Lobby as AbstractLobby,
+	Room,
+	User,
+} from '@karuta/core';
 
-export default class Lobby {
+export default class Lobby implements AbstractLobby {
 	protected users: Map<number, User>;
 
 	protected nextUserId: number;
@@ -26,7 +29,7 @@ export default class Lobby {
 	 */
 	addRoom(room: Room): void {
 		this.nextRoomId++;
-		room.setId(this.nextRoomId);
+		Reflect.set(room, 'id', this.nextRoomId);
 		this.rooms.set(room.getId(), room);
 
 		room.once('close', () => this.removeRoom(room.getId()));
@@ -61,11 +64,10 @@ export default class Lobby {
 	 */
 	addUser(user: User): void {
 		this.nextUserId++;
-		user.setId(this.nextUserId);
-		user.setLobby(this);
+		Reflect.set(user, 'id', this.nextUserId);
 
 		this.users.set(user.getId(), user);
-		user.on('close', () => this.removeUser(user.getId()));
+		user.on('disconnected', () => this.removeUser(user.getId()));
 	}
 
 	/**
@@ -93,6 +95,6 @@ export default class Lobby {
 		}
 
 		const users = Array.from(this.users.values());
-		await Promise.all(users.map((user) => user.disconnect()));
+		await Promise.all(users.map((user) => user.logout()));
 	}
 }

@@ -4,7 +4,7 @@ import App from '../src/core/App';
 
 const localhost = '127.0.0.1';
 
-function occupyPort(port) {
+function occupyPort(port: number): Promise<void> {
 	const server = net.createServer((socket) => {
 		socket.write('This is a test');
 	});
@@ -21,7 +21,7 @@ function occupyPort(port) {
 }
 
 describe('App', () => {
-	let app = null;
+	let app: App;
 
 	const port = Math.floor(Math.random() * 55536) + 10000;
 	test(`should be started at ${port}`, async () => {

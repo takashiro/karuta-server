@@ -1,18 +1,21 @@
 import { EventEmitter } from 'events';
 
+import { Method } from '@karuta/protocol';
+
 import {
 	Driver,
-	Room as RoomInterface,
+	Room as AbstractRoom,
+	User,
 } from '@karuta/core';
-import User from './User';
+
 import DriverLoader from './DriverLoader';
 
-export default class Room extends EventEmitter implements RoomInterface {
+export default class Room extends EventEmitter implements AbstractRoom {
 	protected id: number;
 
 	protected owner: User;
 
-	protected driver: Driver | null;
+	protected driver?: Driver;
 
 	protected users: Set<User>;
 
@@ -25,7 +28,6 @@ export default class Room extends EventEmitter implements RoomInterface {
 
 		this.id = 0;
 		this.owner = owner;
-		this.driver = null;
 
 		this.users = new Set();
 		this.addUser(owner);
@@ -39,17 +41,9 @@ export default class Room extends EventEmitter implements RoomInterface {
 	}
 
 	/**
-	 * Sets room id
-	 * @param id
-	 */
-	setId(id: number): void {
-		this.id = id;
-	}
-
-	/**
 	 * @return The driver loaded in this room
 	 */
-	getDriver(): Driver | null {
+	getDriver(): Driver | undefined {
 		return this.driver;
 	}
 
@@ -64,13 +58,13 @@ export default class Room extends EventEmitter implements RoomInterface {
 	 * Find a user by user id
 	 * @param id user id
 	 */
-	findUser(id: number): User | null {
+	findUser(id: number): User | undefined {
 		for (const user of this.users) {
 			if (user.getId() === id) {
 				return user;
 			}
 		}
-		return null;
+		return undefined;
 	}
 
 	/**
@@ -92,7 +86,7 @@ export default class Room extends EventEmitter implements RoomInterface {
 		user.setRoom(this);
 		this.users.add(user);
 
-		user.on('close', () => this.removeUser(user));
+		user.on('disconnected', () => this.removeUser(user));
 	}
 
 	/**
@@ -100,7 +94,7 @@ export default class Room extends EventEmitter implements RoomInterface {
 	 * @param user
 	 */
 	removeUser(user: User): void {
-		user.setRoom(null);
+		user.setRoom();
 		this.users.delete(user);
 
 		if (this.users.size <= 0) {
@@ -110,29 +104,29 @@ export default class Room extends EventEmitter implements RoomInterface {
 
 	/**
 	 * Broadcast a command to all users in this room
-	 * @param command
+	 * @param method
+	 * @param context
 	 * @param args
 	 */
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	broadcast(command: number, args: any = null): void {
+	broadcast(method: Method, context: number, args?: unknown): void {
 		for (const user of this.users) {
-			user.send(command, args);
+			user.notify(method, context, args);
 		}
 	}
 
 	/**
 	 * Broadcast a command to all users except one
 	 * @param except
-	 * @param command
+	 * @param method
+	 * @param context
 	 * @param args
 	 */
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	broadcastExcept(except: User, command: number, args: any = null): void {
+	broadcastExcept(except: User, method: Method, context: number, args?: unknown): void {
 		for (const user of this.users) {
 			if (user === except) {
 				continue;
 			}
-			user.send(command, args);
+			user.notify(method, context, args);
 		}
 	}
 
@@ -146,9 +140,9 @@ export default class Room extends EventEmitter implements RoomInterface {
 				id: this.owner.getId(),
 			},
 			driver: this.driver && this.driver.getConfig ? {
-				...this.driver.getConfig(),
+				...this.driver.getConfig() as Record<string, unknown>,
 				name: this.driver.getName(),
-			} : null,
+			} : undefined,
 		};
 	}
 
@@ -163,7 +157,7 @@ export default class Room extends EventEmitter implements RoomInterface {
 	}
 
 	/**
-	 * Load a driver from ./extension/.
+	 * Load a driver from Node.js modules.
 	 * @param name driver name
 	 */
 	loadDriver(name: string): boolean {

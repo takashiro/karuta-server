@@ -1,47 +1,15 @@
 import http from 'http';
 import WebSocket from 'ws';
 
-import Action from '../net/Action';
+import { Connection } from '@karuta/protocol';
 
 import Lobby from './Lobby';
 import User from './User';
-import Packet from './Packet';
 import Config from './Config';
 
+import ContextListeners from '../cmd';
+
 import defaultConfig from '../defaultConfig';
-import actions from '../cmd';
-
-async function handleUserAction(user: User, packet: Packet): Promise<void> {
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	let action: Action<any, any> | undefined;
-	if (packet.command < 0) {
-		action = actions.get(packet.command);
-	} else if (packet.command > 0) {
-		const driver = user.getDriver();
-		if (driver) {
-			try {
-				action = driver.getAction(packet.command);
-			} catch (error) {
-				console.error(`Failed to get driver action: ${error}`);
-			}
-		}
-	}
-
-	if (action) {
-		const ret = await action.process(user, packet.arguments);
-		if (ret !== undefined) {
-			user.send(packet.command, ret);
-		}
-	} else {
-		// This should be a reply.
-	}
-}
-
-function handleNewConnection(lobby: Lobby, socket: WebSocket): void {
-	const user = new User(socket);
-	user.on('action', (packet) => handleUserAction(user, packet));
-	lobby.addUser(user);
-}
 
 export default class App {
 	config: Config;
@@ -57,7 +25,7 @@ export default class App {
 		this.lobby = new Lobby();
 		this.server = http.createServer();
 		this.wss = new WebSocket.Server({ server: this.server });
-		this.wss.on('connection', (socket) => handleNewConnection(this.lobby, socket));
+		this.wss.on('connection', (socket) => this.createUser(socket));
 	}
 
 	/**
@@ -67,6 +35,17 @@ export default class App {
 		return new Promise((resolve) => {
 			this.server.listen(this.config.socket, resolve);
 		});
+	}
+
+	createUser(socket: WebSocket): void {
+		const conn = new Connection(socket);
+		const user = new User(this.lobby, conn);
+		this.lobby.addUser(user);
+
+		for (const ContextListener of ContextListeners) {
+			const listener = new ContextListener(user);
+			conn.on(listener);
+		}
 	}
 
 	/**

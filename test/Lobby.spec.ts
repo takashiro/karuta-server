@@ -1,43 +1,29 @@
 import WebSocket from 'ws';
 
-import App from '../src/core/App';
-import User from '../src/core/User';
+import {
+	Method,
+	Context,
+	Connection,
+} from '@karuta/protocol';
 
-import cmd from '../src/net/Command';
+import App from '../src/core/App';
 import serverVersion from '../src/core/version';
+
+interface RoomProfile {
+	id: number;
+	owner: {
+		id: number;
+	};
+	driver?: unknown;
+}
 
 const localhost = '127.0.0.1';
 
-function waitUntilConnected(socket) {
+function waitUntilConnected(socket: WebSocket): Promise<void> {
 	return new Promise(((resolve, reject) => {
 		socket.once('open', resolve);
 		socket.once('close', reject);
 	}));
-}
-
-class GameDriver {
-	constructor() {
-		this.name = 'test driver';
-	}
-
-	getName() {
-		return this.name;
-	}
-
-	setConfig(config) {
-		this.a = config.a;
-	}
-
-	getConfig() {
-		return {
-			a: this.a,
-		};
-	}
-
-	getAction(command) {
-		this.a = String(command);
-		return null;
-	}
 }
 
 describe('Lobby', () => {
@@ -50,29 +36,32 @@ describe('Lobby', () => {
 	});
 
 	const serverUrl = `ws://${localhost}:${port}`;
+	let ws: WebSocket;
+	let user1: Connection;
+	let user1Id: number;
+	let user2: Connection;
+	let user2Id: number;
 
-	let ws = null;
-	let user = null;
 	test(`should connect to ${serverUrl}`, async () => {
 		ws = new WebSocket(serverUrl);
 		await waitUntilConnected(ws);
 	});
 
 	test('Client should be connected', async () => {
-		user = new User(ws);
-		expect(user.isConnected()).toBeTruthy();
-		user.id = await user.request(cmd.Login);
-		expect(user.id).toBeGreaterThan(0);
+		user1 = new Connection(ws);
+		expect(user1.getReadyState()).toBe(WebSocket.OPEN);
+		user1Id = await user1.post(Context.UserSession) as number;
+		expect(user1Id).toBeGreaterThan(0);
 	});
 
 	test('Client checks server version', async () => {
-		const version = await user.request(cmd.CheckVersion);
-		expect(version).toEqual(serverVersion);
+		const version = await user1.get(Context.Version);
+		expect(version).toStrictEqual(serverVersion);
 	});
 
-	let roomId = 0;
+	let roomId: number;
 	test('creates a room', async () => {
-		roomId = await user.request(cmd.CreateRoom);
+		roomId = await user1.put(Context.Room) as number;
 		expect(roomId).toBeGreaterThan(0);
 	});
 
@@ -82,38 +71,53 @@ describe('Lobby', () => {
 		expect(app.lobby.findRoom(roomId)).toBeTruthy();
 	});
 
-	let user2 = null;
 	test('comes another user', async () => {
 		const socket = new WebSocket(serverUrl);
 		await waitUntilConnected(socket);
 
-		user2 = new User(socket);
-		user2.setId(await user.request(cmd.Login));
+		user2 = new Connection(socket);
+		user2Id = await user1.post(Context.UserSession) as number;
+		expect(user2Id).toBeGreaterThan(0);
 
-		const ret = await user2.request(cmd.EnterRoom, roomId);
+		const ret = await user2.get(Context.Room, { id: roomId });
 		expect(ret).toBe(roomId);
 	});
 
 	test('unicast a command', async () => {
 		const text = `This is a test: ${Math.floor(Math.random() * 65536)}`;
 
-		const reply = user.receive(cmd.Speak);
+		const reply = new Promise((resolve) => {
+			user1.on({
+				context: Context.Message,
+				post: resolve,
+			});
+		});
 		const room = lobby.findRoom(roomId);
-		const serverUser = room.findUser(user.getId());
-		serverUser.send(cmd.Speak, text);
+		const serverUser = room.findUser(user1Id);
+		serverUser.notify(Method.Post, Context.Message, text);
 		const message = await reply;
 		expect(message).toBe(text);
 	});
 
 	const key = [2, 3, 9, 7];
 	test('broadcasts a command', async () => {
-		const reply1 = user.receive(cmd.SetUserList);
-		const reply2 = user2.receive(cmd.SetUserList);
+		const reply1 = new Promise((resolve) => {
+			user1.on({
+				context: Context.Users,
+				put: resolve,
+			});
+		});
+		const reply2 = new Promise((resolve) => {
+			user2.on({
+				context: Context.Users,
+				put: resolve,
+			});
+		});
 
 		const room = lobby.findRoom(roomId);
 		expect(room).toBeTruthy();
 
-		room.broadcast(cmd.SetUserList, key);
+		room.broadcast(Method.Put, Context.Users, key);
 
 		const users1 = await reply1;
 		const users2 = await reply2;
@@ -122,24 +126,17 @@ describe('Lobby', () => {
 	});
 
 	test('updates room configuration', async () => {
-		const received = user2.receive(cmd.UpdateRoom);
-		user.send(cmd.UpdateRoom, { a: Math.floor(Math.random() * 0xFFFF) });
-		const room = await received;
+		const received = new Promise((resolve) => {
+			user2.on({
+				context: Context.Room,
+				patch: resolve,
+			});
+		});
+		user1.notify(Method.Patch, Context.Room, { a: Math.floor(Math.random() * 0xFFFF) });
+		const room = await received as RoomProfile;
 		expect(room.id).toBe(roomId);
-		expect(room.owner.id).toBe(user.getId());
-		expect(room.driver).toBeNull();
-	});
-
-	test('updates game driver configuration', async () => {
-		const room = lobby.findRoom(roomId);
-		room.driver = new GameDriver();
-
-		const salt = Math.floor(Math.random() * 0xFFFF);
-		const received = user2.receive(cmd.UpdateRoom);
-		user.send(cmd.UpdateRoom, { a: salt });
-		const config = await received;
-		expect(config.driver).toBeTruthy();
-		expect(config.driver.a).toBe(salt);
+		expect(room.owner.id).toBe(user1Id);
+		expect(room.driver).toBeUndefined();
 	});
 
 	test('should stop the app', async () => {
