@@ -11,7 +11,17 @@ import {
 
 import { Connection, Method } from '@karuta/protocol';
 
-export default class User extends EventEmitter implements AbstractUser {
+interface User {
+	on(event: 'disconnected', listener: () => void): this;
+
+	once(event: 'disconnected', listener: () => void): this;
+
+	off(event: 'disconnected', listener: () => void): this;
+
+	emit(event: 'disconnected'): boolean;
+}
+
+class User extends EventEmitter implements AbstractUser {
 	protected id = 0;
 
 	protected name?: string;
@@ -106,6 +116,8 @@ export default class User extends EventEmitter implements AbstractUser {
 	 * Disconnect the client
 	 */
 	async logout(): Promise<void> {
+		this.emit('disconnected');
+
 		const { socket } = this;
 		if (!socket) {
 			return;
@@ -165,3 +177,5 @@ export default class User extends EventEmitter implements AbstractUser {
 		this.socket?.notify(method, context, params);
 	}
 }
+
+export default User;

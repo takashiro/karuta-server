@@ -67,7 +67,7 @@ export default class Lobby implements AbstractLobby {
 		Reflect.set(user, 'id', this.nextUserId);
 
 		this.users.set(user.getId(), user);
-		user.on('disconnected', () => this.removeUser(user.getId()));
+		user.once('disconnected', () => this.removeUser(user.getId()));
 	}
 
 	/**

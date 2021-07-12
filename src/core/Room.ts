@@ -86,7 +86,7 @@ export default class Room extends EventEmitter implements AbstractRoom {
 		user.setRoom(this);
 		this.users.add(user);
 
-		user.on('disconnected', () => this.removeUser(user));
+		user.once('disconnected', () => this.removeUser(user));
 	}
 
 	/**
