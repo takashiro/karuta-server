@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 
+import Config from './core/Config';
 import App from './core/App';
-import readConfig from './util/readConfig';
 
 (async function main(): Promise<void> {
-	const config = await readConfig();
+	const config = new Config();
+	await config.load();
 	const app = new App(config);
 	await app.start();
 }());

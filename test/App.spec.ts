@@ -1,6 +1,7 @@
 import net from 'net';
 
 import App from '../src/core/App';
+import Config from '../src/core/Config';
 
 const localhost = '127.0.0.1';
 
@@ -24,8 +25,14 @@ describe('App', () => {
 	let app: App;
 
 	const port = Math.floor(Math.random() * 55536) + 10000;
+	const config = new Config();
+	config.setSocket({
+		host: localhost,
+		port,
+	});
+
 	test(`should be started at ${port}`, async () => {
-		app = new App({ socket: { port, host: localhost } });
+		app = new App(config);
 		await app.start();
 	});
 

@@ -9,8 +9,6 @@ import Config from './Config';
 
 import ContextListeners from '../cmd';
 
-import defaultConfig from '../defaultConfig';
-
 export default class App {
 	config: Config;
 
@@ -21,7 +19,7 @@ export default class App {
 	wss: WebSocket.Server;
 
 	constructor(config: Config) {
-		this.config = { ...defaultConfig, ...config };
+		this.config = config;
 		this.lobby = new Lobby();
 		this.server = http.createServer();
 		this.wss = new WebSocket.Server({ server: this.server });
@@ -33,7 +31,7 @@ export default class App {
 	 */
 	start(): Promise<void> {
 		return new Promise((resolve) => {
-			this.server.listen(this.config.socket, resolve);
+			this.server.listen(this.config.getSocket(), resolve);
 		});
 	}
 

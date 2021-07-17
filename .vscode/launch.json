@@ -38,6 +38,7 @@
 				"${workspaceRoot}/node_modules/jest/bin/jest.js",
 				"--runInBand",
 				"--coverage=false",
+				"--timeout=9999999",
 				"${fileBasenameNoExtension}"
 			],
 			"console": "integratedTerminal",

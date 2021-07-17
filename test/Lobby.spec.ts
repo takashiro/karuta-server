@@ -8,6 +8,7 @@ import {
 
 import App from '../src/core/App';
 import serverVersion from '../src/core/version';
+import Config from '../src/core/Config';
 
 interface RoomProfile {
 	id: number;
@@ -28,7 +29,12 @@ function waitUntilConnected(socket: WebSocket): Promise<void> {
 
 describe('Lobby', () => {
 	const port = 10000 + Math.floor(Math.random() * 55536);
-	const app = new App({ socket: { port, host: localhost } });
+	const config = new Config();
+	config.setSocket({
+		host: localhost,
+		port,
+	});
+	const app = new App(config);
 	const { lobby } = app;
 
 	test(`should be listening ${port}`, async () => {
