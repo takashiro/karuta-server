@@ -5,6 +5,7 @@ import {
 	Room as AbstractRoom,
 	User,
 	Method,
+	Connection,
 } from '@karuta/core';
 
 import DriverLoader from './DriverLoader';
@@ -84,6 +85,7 @@ export default class Room extends EventEmitter implements AbstractRoom {
 		}
 		user.setRoom(this);
 		this.users.add(user);
+		this.bindEvents(user);
 
 		user.once('disconnected', () => this.removeUser(user));
 	}
@@ -95,6 +97,7 @@ export default class Room extends EventEmitter implements AbstractRoom {
 	removeUser(user: User): void {
 		user.setRoom();
 		this.users.delete(user);
+		this.unbindEvents(user);
 
 		if (this.users.size <= 0) {
 			this.emit('close');
@@ -168,10 +171,68 @@ export default class Room extends EventEmitter implements AbstractRoom {
 		try {
 			const GameDriver = loader.load();
 			this.driver = new GameDriver(this);
-			return true;
 		} catch (error) {
 			console.log(error.stack);
 			return false;
+		}
+
+		for (const user of this.users) {
+			this.bindEvents(user);
+		}
+
+		return true;
+	}
+
+	/**
+	 * Unload the existing driver.
+	 * @return Whether the driver is unloaded.
+	 */
+	unloadDriver(): boolean {
+		if (!this.driver) {
+			return false;
+		}
+
+		delete this.driver;
+
+		for (const user of this.users) {
+			this.unbindEvents(user);
+		}
+
+		return true;
+	}
+
+	protected bindEvents(user: User): void {
+		if (!this.driver) {
+			return;
+		}
+
+		const socket = Reflect.get(user, 'socket') as Connection;
+		if (!socket) {
+			return;
+		}
+
+		const listeners = this.driver.createContextListeners(user);
+		if (!listeners) {
+			return;
+		}
+
+		for (const listener of listeners) {
+			socket.on(listener);
+		}
+	}
+
+	protected unbindEvents(user: User): void {
+		const socket = Reflect.get(user, 'socket') as Connection;
+		if (!socket) {
+			return;
+		}
+
+		const listeners = socket.getListeners();
+		for (const listener of listeners) {
+			if (listener.context < 0) {
+				continue;
+			}
+			socket.off(listener.context);
 		}
 	}
 }

@@ -35,7 +35,7 @@ config.setSocket({
 	port,
 });
 const app = new App(config);
-const { lobby } = app;
+const lobby = app.getLobby();
 
 it(`should be listening ${port}`, async () => {
 	await app.start();
@@ -72,9 +72,9 @@ it('creates a room', async () => {
 });
 
 it('should have a new room', () => {
-	const rooms = app.lobby.getRooms();
+	const rooms = lobby.getRooms();
 	expect(rooms.length).toBe(1);
-	expect(app.lobby.findRoom(roomId)).toBeTruthy();
+	expect(lobby.findRoom(roomId)).toBeTruthy();
 });
 
 it('comes another user', async () => {

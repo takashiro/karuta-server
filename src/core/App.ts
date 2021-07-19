@@ -10,13 +10,13 @@ import Config from './Config';
 import ContextListeners from '../cmd';
 
 export default class App {
-	config: Config;
+	protected config: Config;
 
-	lobby: Lobby;
+	protected lobby: Lobby;
 
-	server: http.Server;
+	protected server: http.Server;
 
-	wss: WebSocket.Server;
+	protected wss: WebSocket.Server;
 
 	constructor(config: Config) {
 		this.config = config;
@@ -62,5 +62,12 @@ export default class App {
 				}
 			});
 		});
+	}
+
+	/**
+	 * @return Game Lobby
+	 */
+	getLobby(): Lobby {
+		return this.lobby;
 	}
 }

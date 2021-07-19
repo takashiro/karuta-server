@@ -49,6 +49,11 @@ export default class RoomHandler extends Action {
 		return -1;
 	}
 
+	head(): unknown {
+		const room = this.user.getRoom();
+		return room?.getConfig();
+	}
+
 	patch(config: unknown): void {
 		const room = this.user.getRoom();
 		if (!room || room.getOwner() !== this.user) {
