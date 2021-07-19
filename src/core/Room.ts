@@ -1,11 +1,10 @@
 import { EventEmitter } from 'events';
 
-import { Method } from '@karuta/protocol';
-
 import {
 	Driver,
 	Room as AbstractRoom,
 	User,
+	Method,
 } from '@karuta/core';
 
 import DriverLoader from './DriverLoader';

@@ -1,7 +1,7 @@
 import http from 'http';
 import WebSocket from 'ws';
 
-import { Connection } from '@karuta/protocol';
+import { Connection } from '@karuta/core';
 
 import Lobby from './Lobby';
 import User from './User';

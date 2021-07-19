@@ -1,9 +1,8 @@
 import {
 	Method,
 	Context,
-} from '@karuta/protocol';
-
-import { User } from '@karuta/core';
+	User,
+} from '@karuta/core';
 
 import Room from '../core/Room';
 import Action from '../core/Action';

@@ -31,22 +31,21 @@
   },
   "homepage": "https://github.com/takashiro/karuta-node-server#readme",
   "dependencies": {
-    "@karuta/core": "^0.3.0",
-    "@karuta/protocol": "^0.2.0",
+    "@karuta/core": "^0.4.0",
     "ws": "^7.5.3"
   },
   "devDependencies": {
     "@types/jest": "^26.0.24",
     "@types/node": "^14.17.5",
-    "@types/ws": "^7.4.6",
-    "@typescript-eslint/eslint-plugin": "^4.28.3",
-    "@typescript-eslint/parser": "^4.28.3",
-    "eslint": "^7.30.0",
+    "@types/ws": "^7.4.7",
+    "@typescript-eslint/eslint-plugin": "^4.28.4",
+    "@typescript-eslint/parser": "^4.28.4",
+    "eslint": "^7.31.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.23.4",
     "jest": "^27.0.6",
     "rimraf": "^3.0.2",
-    "ts-jest": "^27.0.3",
+    "ts-jest": "^27.0.4",
     "typescript": "^4.3.5"
   },
   "files": [

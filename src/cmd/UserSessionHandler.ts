@@ -1,5 +1,7 @@
-import { Context } from '@karuta/protocol';
-import { User } from '@karuta/core';
+import {
+	Context,
+	User,
+} from '@karuta/core';
 
 import Action from '../core/Action';
 

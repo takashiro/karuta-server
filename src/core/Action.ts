@@ -1,9 +1,9 @@
 import {
+	ContextListener,
 	User,
 	Room,
 	Lobby,
 } from '@karuta/core';
-import { ContextListener } from '@karuta/protocol';
 
 export default abstract class Action implements ContextListener {
 	readonly context: number;

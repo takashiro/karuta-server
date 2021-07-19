@@ -7,9 +7,9 @@ import {
 	Driver,
 	User as AbstractUser,
 	UserProfile,
+	Connection,
+	Method,
 } from '@karuta/core';
-
-import { Connection, Method } from '@karuta/protocol';
 
 interface User {
 	on(event: 'disconnected', listener: () => void): this;

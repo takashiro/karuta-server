@@ -4,7 +4,7 @@ import {
 	Method,
 	Context,
 	Connection,
-} from '@karuta/protocol';
+} from '@karuta/core';
 
 import App from '../src/core/App';
 import serverVersion from '../src/core/version';
