@@ -9,6 +9,7 @@ import {
 import App from '../../src/core/App';
 import serverVersion from '../../src/core/version';
 import Config from '../../src/core/Config';
+import idle from '../../src/util/idle';
 
 interface RoomProfile {
 	id: number;
@@ -81,7 +82,7 @@ it('comes another user', async () => {
 	await waitUntilConnected(socket);
 
 	user2 = new Connection(socket);
-	user2Id = await user1.post(Context.UserSession) as number;
+	user2Id = await user2.post(Context.UserSession) as number;
 	expect(user2Id).toBeGreaterThan(0);
 
 	const ret = await user2.get(Context.Room, { id: roomId });
@@ -142,6 +143,37 @@ it('updates room configuration', async () => {
 	expect(room.id).toBe(roomId);
 	expect(room.owner.id).toBe(user1Id);
 	expect(room.driver).toBeUndefined();
+});
+
+it('cannot modify room configuration without owner privilege', async () => {
+	const room = lobby.findRoom(roomId);
+	const updateConfig = jest.spyOn(room, 'updateConfig');
+	await user2.patch(Context.Room, { a: 1 });
+	expect(updateConfig).not.toBeCalled();
+	updateConfig.mockRestore();
+});
+
+it('speaks', async () => {
+	const received = new Promise((resolve) => {
+		user1.on({
+			context: Context.Message,
+			post: resolve,
+		});
+	});
+	await user2.post(Context.Message, 'Hello, there!');
+	const msg = await received;
+	expect(msg).toStrictEqual({
+		user: user2Id,
+		message: 'Hello, there!',
+	});
+});
+
+it('logs out', async () => {
+	expect(lobby.findUser(user2Id)).toBeTruthy();
+	await user2.delete(Context.UserSession);
+	await idle(0);
+	await user2.close();
+	expect(lobby.findUser(user2Id)).toBeFalsy();
 });
 
 it('should stop the app', async () => {

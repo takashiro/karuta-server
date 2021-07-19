@@ -113,17 +113,22 @@ class User extends EventEmitter implements AbstractUser {
 	}
 
 	/**
-	 * Disconnect the client
+	 * Log out.
 	 */
 	async logout(): Promise<void> {
-		this.emit('disconnected');
-
 		const { socket } = this;
 		if (!socket) {
 			return;
 		}
 		delete this.socket;
 		await socket.close();
+	}
+
+	/**
+	 * Fire a disconnected event.
+	 */
+	disconnect(): void {
+		this.emit('disconnected');
 	}
 
 	/**

@@ -38,7 +38,7 @@ export default class App {
 	createUser(socket: WebSocket): void {
 		const conn = new Connection(socket);
 		const user = new User(this.lobby, conn);
-		socket.addEventListener('close', () => user.logout());
+		socket.addEventListener('close', () => user.disconnect());
 		this.lobby.addUser(user);
 
 		for (const ContextListener of ContextListeners) {

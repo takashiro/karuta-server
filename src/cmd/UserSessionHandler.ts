@@ -19,6 +19,8 @@ export default class UserSessionHandler extends Action {
 	}
 
 	delete(): void {
-		this.user.logout();
+		setTimeout((): void => {
+			this.user.logout();
+		}, 0);
 	}
 }
