@@ -1,15 +1,17 @@
 import path from 'path';
 
-import DriverLoader from '../src/core/DriverLoader';
+import DriverLoader from '../../src/core/DriverLoader';
+
+const sampleDir = path.resolve(path.dirname(__dirname), 'sample');
 
 it('resolves entry script', () => {
 	const loader = new DriverLoader('../../test/sample/fakeFn');
-	expect(loader.resolveEntry()).toBe(path.join(__dirname, 'sample', 'fakeFn.js'));
+	expect(loader.resolveEntry()).toBe(path.join(sampleDir, 'fakeFn.js'));
 });
 
 it('resolves entry directory', () => {
 	const loader = new DriverLoader('../../test/sample/fakeFn');
-	expect(loader.resolveDir()).toBe(path.join(__dirname, 'sample'));
+	expect(loader.resolveDir()).toBe(sampleDir);
 });
 
 it('handles non-existing module', () => {
