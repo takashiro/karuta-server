@@ -1,4 +1,4 @@
-import fs from 'fs/promises';
+import fs from 'fs';
 
 interface SocketOptions {
 	host: string;
@@ -22,7 +22,7 @@ export default class Config {
    * Read configuration.
    */
 	async load(configFile = 'config.json'): Promise<void> {
-		const content = await fs.readFile(configFile, 'utf-8');
+		const content = await fs.promises.readFile(configFile, 'utf-8');
 		const config = JSON.parse(content);
 
 		for (const key of Object.keys(this)) {

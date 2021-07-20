@@ -1,5 +1,5 @@
 import path from 'path';
-import fs from 'fs/promises';
+import fs from 'fs';
 
 import Config from '../../src/core/Config';
 
@@ -16,7 +16,7 @@ it('can read settings from a file', async () => {
 });
 
 it('reads config.json by default', async () => {
-	const readFile = jest.spyOn(fs, 'readFile').mockResolvedValue('{}');
+	const readFile = jest.spyOn(fs.promises, 'readFile').mockResolvedValue('{}');
 	const config = new Config();
 	await config.load();
 	expect(readFile).toBeCalledWith('config.json', 'utf-8');
