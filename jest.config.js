@@ -7,6 +7,7 @@ module.exports = {
 	collectCoverage: true,
 	collectCoverageFrom: [
 		'./src/**/*.ts',
+		'!./src/*.ts',
 	],
 	coverageDirectory: 'build',
 	globals: {
