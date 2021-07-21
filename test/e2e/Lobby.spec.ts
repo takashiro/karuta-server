@@ -1,3 +1,4 @@
+import fs from 'fs';
 import WebSocket from 'ws';
 
 import {
@@ -7,7 +8,6 @@ import {
 } from '@karuta/core';
 
 import App from '../../src/core/App';
-import serverVersion from '../../src/core/version';
 import Config from '../../src/core/Config';
 import idle from '../../src/util/idle';
 
@@ -62,7 +62,8 @@ it('should be connected', async () => {
 
 it('checks server version', async () => {
 	const version = await user1.get(Context.Version);
-	expect(version).toStrictEqual(serverVersion);
+	const pkg = JSON.parse(await fs.promises.readFile(`${__dirname}/../../package.json`, 'utf-8'));
+	expect(version).toStrictEqual(pkg.version);
 });
 
 let roomId: number;
