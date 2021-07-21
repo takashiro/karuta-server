@@ -82,3 +82,18 @@ it('gets room configuration', async () => {
 		},
 	});
 });
+
+it('changes room configuration', async () => {
+	await user.patch(Context.Room, { a: 456 });
+	const config = await user.head(Context.Room);
+	expect(config).toStrictEqual({
+		id: 1,
+		owner: {
+			id: 1,
+		},
+		driver: {
+			name: 'driver example',
+			a: 456,
+		},
+	});
+});
