@@ -4,8 +4,10 @@ import DriverHandler from '../../src/cmd/DriverHandler';
 const user = {} as unknown as User;
 const getOwner = jest.fn().mockReturnValue(user);
 const loadDriver = jest.fn();
+const getDriver = jest.fn();
 const room = {
 	getOwner,
+	getDriver,
 	loadDriver,
 } as unknown as Room;
 const handler = new DriverHandler(user);
@@ -14,6 +16,24 @@ const getRoom = jest.spyOn(handler, 'getRoom').mockReturnValue(room);
 it('does nothing if the user is in the lobby', () => {
 	getRoom.mockReturnValueOnce(undefined);
 	expect(handler.put('test')).toBe(false);
+});
+
+it('returns nothing if the user is in the lobby', () => {
+	getRoom.mockReturnValueOnce(undefined);
+	expect(handler.get()).toBeUndefined();
+});
+
+it('cannot patch configuration in the lobby', () => {
+	getRoom.mockReturnValueOnce(undefined);
+	expect(handler.patch(123)).toBe(false);
+});
+
+it('returns nothing if driver is not loaded', () => {
+	expect(handler.get()).toBeUndefined();
+});
+
+it('cannot patch configuration if driver is not loaded', () => {
+	expect(handler.patch(234)).toBe(false);
 });
 
 it('does nothing if the user does not own the room', () => {

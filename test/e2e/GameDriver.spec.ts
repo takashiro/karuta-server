@@ -32,8 +32,8 @@ it('connects to the server', async () => {
 	await user.open();
 });
 
-it('gets room configuration', async () => {
-	const config = await user.head(Context.Room);
+it('gets driver configuration', async () => {
+	const config = await user.head(Context.Driver);
 	expect(config).toBeUndefined();
 });
 
@@ -48,14 +48,9 @@ it('creates a room', async () => {
 	expect(roomId).toBeGreaterThan(0);
 });
 
-it('gets room configuration', async () => {
-	const config = await user.head(Context.Room);
-	expect(config).toStrictEqual({
-		id: 1,
-		owner: {
-			id: 1,
-		},
-	});
+it('gets driver configuration', async () => {
+	const config = await user.head(Context.Driver);
+	expect(config).toBeUndefined();
 });
 
 it('loads a driver', () => {
@@ -69,31 +64,23 @@ it('puts a custom context', async () => {
 	expect(res).toBe(true);
 });
 
-it('gets room configuration', async () => {
-	const config = await user.head(Context.Room);
+it('gets driver configuration', async () => {
+	const config = await user.head(Context.Driver);
 	expect(config).toStrictEqual({
-		id: 1,
-		owner: {
-			id: 1,
-		},
-		driver: {
-			name: 'driver example',
-			a: 2,
-		},
+		a: 2,
+	});
+
+	const profile = await user.get(Context.Driver);
+	expect(profile).toStrictEqual({
+		name: 'driver example',
+		config,
 	});
 });
 
 it('changes room configuration', async () => {
-	await user.patch(Context.Room, { a: 456 });
-	const config = await user.head(Context.Room);
+	await user.patch(Context.Driver, { a: 456 });
+	const config = await user.head(Context.Driver);
 	expect(config).toStrictEqual({
-		id: 1,
-		owner: {
-			id: 1,
-		},
-		driver: {
-			name: 'driver example',
-			a: 456,
-		},
+		a: 456,
 	});
 });

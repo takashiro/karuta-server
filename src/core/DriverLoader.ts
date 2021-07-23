@@ -34,7 +34,7 @@ export default class DriverLoader {
 		return fs.existsSync(path.join(rootDir, 'karuta.config.json'));
 	}
 
-	load(): new(owner: unknown) => Driver {
+	load(): new(owner: unknown) => Driver<unknown> {
 		// eslint-disable-next-line import/no-dynamic-require, @typescript-eslint/no-var-requires
 		const extension = require(this.name);
 		return extension.default || extension;

@@ -9,7 +9,14 @@ class GameDriver {
 		return this.name;
 	}
 
-	setConfig(config) {
+	getProfile() {
+		return {
+			name: this.name,
+			config: this.getConfig(),
+		};
+	}
+
+	updateConfig(config) {
 		this.a = config.a;
 	}
 

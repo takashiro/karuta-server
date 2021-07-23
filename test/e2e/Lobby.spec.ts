@@ -5,19 +5,13 @@ import {
 	Method,
 	Context,
 	Connection,
+	RoomProfile,
+	RoomConfiguration,
 } from '@karuta/core';
 
 import App from '../../src/core/App';
 import Config from '../../src/core/Config';
 import idle from '../../src/util/idle';
-
-interface RoomProfile {
-	id: number;
-	owner: {
-		id: number;
-	};
-	driver?: unknown;
-}
 
 const localhost = '127.0.0.1';
 
@@ -86,8 +80,8 @@ it('comes another user', async () => {
 	user2Id = await user2.post(Context.UserSession) as number;
 	expect(user2Id).toBeGreaterThan(0);
 
-	const ret = await user2.get(Context.Room, { id: roomId });
-	expect(ret).toBe(roomId);
+	const ret = await user2.post(Context.Room, { id: roomId }) as RoomProfile;
+	expect(ret.id).toBe(roomId);
 });
 
 it('unicast a command', async () => {
@@ -106,8 +100,8 @@ it('unicast a command', async () => {
 	expect(message).toBe(text);
 });
 
-const key = [2, 3, 9, 7];
 it('broadcasts a command', async () => {
+	const key = [2, 3, 9, 7];
 	const reply1 = new Promise((resolve) => {
 		user1.on({
 			context: Context.Users,
@@ -123,6 +117,8 @@ it('broadcasts a command', async () => {
 
 	const room = lobby.findRoom(roomId);
 	expect(room).toBeTruthy();
+	const users = room.getUsers();
+	expect(users).toHaveLength(2);
 
 	room.broadcast(Method.Put, Context.Users, key);
 
@@ -139,11 +135,10 @@ it('updates room configuration', async () => {
 			patch: resolve,
 		});
 	});
-	user1.notify(Method.Patch, Context.Room, { a: Math.floor(Math.random() * 0xFFFF) });
-	const room = await received as RoomProfile;
-	expect(room.id).toBe(roomId);
-	expect(room.owner.id).toBe(user1Id);
-	expect(room.driver).toBeUndefined();
+	const res = await user1.patch(Context.Room, { name: 'Wonderful' });
+	expect(res).toBe(true);
+	const config = await received as RoomConfiguration;
+	expect(config.name).toBe('Wonderful');
 });
 
 it('cannot modify room configuration without owner privilege', async () => {

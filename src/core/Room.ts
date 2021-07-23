@@ -6,18 +6,22 @@ import {
 	User,
 	Method,
 	Connection,
+	RoomConfiguration,
+	RoomProfile,
 } from '@karuta/core';
 
 import DriverLoader from './DriverLoader';
 
 export default class Room extends EventEmitter implements AbstractRoom {
-	protected id: number;
+	protected id = 0;
 
 	protected owner: User;
 
-	protected driver?: Driver;
+	protected config: RoomConfiguration = {};
 
-	protected users: Set<User>;
+	protected driver?: Driver<unknown>;
+
+	protected users: Set<User> = new Set();
 
 	/**
 	 * Create a new instance of Room
@@ -26,10 +30,7 @@ export default class Room extends EventEmitter implements AbstractRoom {
 	constructor(owner: User) {
 		super();
 
-		this.id = 0;
 		this.owner = owner;
-
-		this.users = new Set();
 		this.addUser(owner);
 	}
 
@@ -43,7 +44,7 @@ export default class Room extends EventEmitter implements AbstractRoom {
 	/**
 	 * @return The driver loaded in this room
 	 */
-	getDriver(): Driver | undefined {
+	getDriver(): Driver<unknown> | undefined {
 		return this.driver;
 	}
 
@@ -133,28 +134,33 @@ export default class Room extends EventEmitter implements AbstractRoom {
 	}
 
 	/**
-	 * Getter of room configuration
+	 * @return Basic information of the room
 	 */
-	getConfig(): unknown {
+	getProfile(): RoomProfile {
 		return {
 			id: this.id,
 			owner: {
 				id: this.owner.getId(),
 			},
-			driver: this.driver && this.driver.getConfig ? {
-				...this.driver.getConfig() as Record<string, unknown>,
-				name: this.driver.getName(),
-			} : undefined,
+			driver: this.driver?.getName(),
+			config: this.getConfig(),
 		};
+	}
+
+	/**
+	 * @return Driver configurations
+	 */
+	getConfig(): RoomConfiguration {
+		return this.config;
 	}
 
 	/**
 	 * Update room configuration
 	 * @param config
 	 */
-	updateConfig(config: unknown): void {
-		if (this.driver && this.driver.setConfig) {
-			this.driver.setConfig(config);
+	updateConfig(config: RoomConfiguration): void {
+		if (config.name) {
+			this.config.name = config.name;
 		}
 	}
 
@@ -192,11 +198,11 @@ export default class Room extends EventEmitter implements AbstractRoom {
 			return false;
 		}
 
-		delete this.driver;
-
 		for (const user of this.users) {
 			this.unbindEvents(user);
 		}
+
+		delete this.driver;
 
 		return true;
 	}
@@ -222,6 +228,10 @@ export default class Room extends EventEmitter implements AbstractRoom {
 	}
 
 	protected unbindEvents(user: User): void {
+		if (!this.driver) {
+			return;
+		}
+
 		const socket = Reflect.get(user, 'socket') as Connection;
 		if (!socket) {
 			return;

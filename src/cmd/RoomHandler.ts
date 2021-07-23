@@ -2,13 +2,16 @@ import {
 	Method,
 	Context,
 	User,
+	Room,
+	RoomConfiguration,
+	RoomProfile,
 } from '@karuta/core';
 
-import Room from '../core/Room';
+import GameRoom from '../core/Room';
 import Action from '../core/Action';
 
-interface GetParams {
-	id: number;
+interface QueryParams {
+	id?: number;
 }
 
 export default class RoomHandler extends Action {
@@ -23,44 +26,59 @@ export default class RoomHandler extends Action {
 		}
 
 		const user = this.getUser();
-		const room = new Room(user);
+		const room = new GameRoom(user);
 		lobby.addRoom(room);
 
 		return room.getId();
 	}
 
-	get(params: unknown): number {
-		if (typeof params !== 'object' || !params) {
-			return -1;
-		}
-
-		const lobby = this.getLobby();
-		if (!lobby) {
-			return -1;
-		}
-
-		const { id } = params as GetParams;
-		const room = lobby.findRoom(id);
-		if (room) {
-			const user = this.getUser();
-			room.addUser(user);
-			return room.getId();
-		}
-		return -1;
+	get(params: unknown): RoomProfile | undefined {
+		const room = this.findRoom(params);
+		return room?.getProfile();
 	}
 
-	head(): unknown {
+	post(params: unknown): RoomProfile | undefined {
+		const room = this.findRoom(params);
+		if (!room) {
+			return;
+		}
+
+		const user = this.getUser();
+		room.addUser(user);
+		return room.getProfile();
+	}
+
+	head(): RoomConfiguration | undefined {
 		const room = this.user.getRoom();
 		return room?.getConfig();
 	}
 
-	patch(config: unknown): void {
+	patch(config: unknown): boolean {
 		const room = this.user.getRoom();
 		if (!room || room.getOwner() !== this.user) {
+			return false;
+		}
+
+		if (typeof config !== 'object') {
+			return false;
+		}
+
+		room.updateConfig(config as Partial<RoomConfiguration>);
+		room.broadcast(Method.Patch, Context.Room, room.getConfig());
+		return true;
+	}
+
+	private findRoom(params: unknown): Room | undefined {
+		if (typeof params !== 'object' || !params) {
 			return;
 		}
 
-		room.updateConfig(config);
-		room.broadcast(Method.Patch, Context.Room, room.getConfig());
+		const lobby = this.getLobby();
+		if (!lobby) {
+			return;
+		}
+
+		const { id } = params as QueryParams;
+		return id ? lobby.findRoom(id) : undefined;
 	}
 }
