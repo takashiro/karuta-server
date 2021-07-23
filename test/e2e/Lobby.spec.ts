@@ -80,6 +80,9 @@ it('comes another user', async () => {
 	user2Id = await user2.post(Context.UserSession) as number;
 	expect(user2Id).toBeGreaterThan(0);
 
+	expect(await user2.post(Context.Room, { })).toBeUndefined();
+	expect(await user2.post(Context.Room, { id: 9999 })).toBeUndefined();
+
 	const ret = await user2.post(Context.Room, { id: roomId }) as RoomProfile;
 	expect(ret.id).toBe(roomId);
 });
@@ -139,6 +142,26 @@ it('updates room configuration', async () => {
 	expect(res).toBe(true);
 	const config = await received as RoomConfiguration;
 	expect(config.name).toBe('Wonderful');
+});
+
+it('can see the room from the lobby', async () => {
+	const room = await user2.get(Context.Room, { id: roomId });
+	expect(room).toStrictEqual({
+		id: roomId,
+		owner: {
+			id: user1Id,
+		},
+		config: {
+			name: 'Wonderful',
+		},
+	});
+});
+
+it('can see room configuration from the lobby', async () => {
+	const config = await user2.head(Context.Room, { id: roomId });
+	expect(config).toStrictEqual({
+		name: 'Wonderful',
+	});
 });
 
 it('cannot modify room configuration without owner privilege', async () => {
