@@ -7,6 +7,7 @@ import {
 	Connection,
 	RoomProfile,
 	RoomConfiguration,
+	UserProfile,
 } from '@karuta/core';
 
 import App from '../../src/core/App';
@@ -185,6 +186,11 @@ it('speaks', async () => {
 		user: user2Id,
 		message: 'Hello, there!',
 	});
+});
+
+it('can see users in the same room', async () => {
+	const res = await user2.head(Context.User, { id: user1Id }) as UserProfile;
+	expect(res.id).toBe(user1Id);
 });
 
 it('logs out', async () => {

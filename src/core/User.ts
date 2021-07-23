@@ -81,14 +81,6 @@ class User extends EventEmitter implements AbstractUser {
 	}
 
 	/**
-	 * Sets game lobby
-	 * @param lobby
-	 */
-	setLobby(lobby: Lobby): void {
-		this.lobby = lobby;
-	}
-
-	/**
 	 * Gets the driver in the room
 	 */
 	getDriver(): Driver<unknown> | undefined {
