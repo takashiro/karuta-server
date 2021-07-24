@@ -41,6 +41,11 @@ it('does nothing if the user does not own the room', () => {
 	expect(handler.put('test')).toBe(false);
 });
 
+it('cannot unload the driver if the user does not own the room', () => {
+	getOwner.mockReturnValueOnce(undefined);
+	expect(handler.delete()).toBe(false);
+});
+
 it('accepts string only', () => {
 	expect(handler.put({ a: 1 })).toBe(false);
 });

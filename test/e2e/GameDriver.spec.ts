@@ -84,3 +84,8 @@ it('changes room configuration', async () => {
 		a: 456,
 	});
 });
+
+it('unloads the driver', async () => {
+	const success = await user.delete(Context.Driver);
+	expect(success).toBe(true);
+});

@@ -60,4 +60,12 @@ export default class DriverHandler extends Action {
 		room.broadcast(Method.Patch, Context.Driver, driver.getConfig());
 		return true;
 	}
+
+	delete(): boolean {
+		const room = this.getRoom();
+		if (!room || room.getOwner() !== this.user) {
+			return false;
+		}
+		return room.unloadDriver();
+	}
 }

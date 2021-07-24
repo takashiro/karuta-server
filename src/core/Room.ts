@@ -178,7 +178,7 @@ export default class Room extends EventEmitter implements AbstractRoom {
 			const GameDriver = loader.load();
 			this.driver = new GameDriver(this);
 		} catch (error) {
-			console.log(error.stack);
+			console.error(error);
 			return false;
 		}
 
