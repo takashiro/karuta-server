@@ -4,7 +4,7 @@ import {
 	UserProfile,
 } from '@karuta/core';
 
-import Action from '../core/Action';
+import Action from '../base/Action';
 
 interface QueryParams {
 	id: number;

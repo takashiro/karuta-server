@@ -4,7 +4,7 @@ import {
 	Room,
 } from '@karuta/core';
 
-import User from '../../src/core/User';
+import User from '../../src/base/User';
 
 const lobby = {
 } as unknown as Lobby;

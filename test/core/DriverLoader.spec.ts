@@ -1,6 +1,6 @@
 import path from 'path';
 
-import DriverLoader from '../../src/core/DriverLoader';
+import DriverLoader from '../../src/base/DriverLoader';
 
 const sampleDir = path.resolve(path.dirname(__dirname), 'sample');
 

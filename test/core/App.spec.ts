@@ -1,6 +1,6 @@
 import { Server } from 'http';
-import App from '../../src/core/App';
-import Config from '../../src/core/Config';
+import App from '../../src/base/App';
+import Config from '../../src/base/Config';
 
 const config = new Config();
 const app = new App(config);

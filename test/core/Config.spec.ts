@@ -1,7 +1,7 @@
 import path from 'path';
 import fs from 'fs';
 
-import Config from '../../src/core/Config';
+import Config from '../../src/base/Config';
 
 it('has default options', () => {
 	const config = new Config();

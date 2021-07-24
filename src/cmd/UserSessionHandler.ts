@@ -3,7 +3,7 @@ import {
 	User,
 } from '@karuta/core';
 
-import Action from '../core/Action';
+import Action from '../base/Action';
 
 export default class UserSessionHandler extends Action {
 	constructor(user: User) {

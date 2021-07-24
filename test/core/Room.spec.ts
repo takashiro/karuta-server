@@ -4,10 +4,10 @@ import {
 	Connection,
 } from '@karuta/core';
 
-import Lobby from '../../src/core/Lobby';
-import User from '../../src/core/User';
-import Room from '../../src/core/Room';
-import DriverLoader from '../../src/core/DriverLoader';
+import Lobby from '../../src/base/Lobby';
+import User from '../../src/base/User';
+import Room from '../../src/base/Room';
+import DriverLoader from '../../src/base/DriverLoader';
 
 const lobby = new Lobby();
 const u1 = new User(lobby);

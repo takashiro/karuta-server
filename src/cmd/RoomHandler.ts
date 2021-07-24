@@ -7,8 +7,8 @@ import {
 	RoomProfile,
 } from '@karuta/core';
 
-import GameRoom from '../core/Room';
-import Action from '../core/Action';
+import GameRoom from '../base/Room';
+import Action from '../base/Action';
 
 interface QueryParams {
 	id?: number;

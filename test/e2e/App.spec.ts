@@ -1,7 +1,7 @@
 import net from 'net';
 
-import App from '../../src/core/App';
-import Config from '../../src/core/Config';
+import App from '../../src/base/App';
+import Config from '../../src/base/Config';
 
 const localhost = '127.0.0.1';
 

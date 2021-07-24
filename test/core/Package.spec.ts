@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { pkg } from '../../src/core/Package';
+import { pkg } from '../../src/base/Package';
 
 it('catches all errors', async () => {
 	const readFile = jest.spyOn(fs.promises, 'readFile').mockRejectedValue(new Error('unknown'));

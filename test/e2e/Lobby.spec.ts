@@ -10,8 +10,8 @@ import {
 	UserProfile,
 } from '@karuta/core';
 
-import App from '../../src/core/App';
-import Config from '../../src/core/Config';
+import App from '../../src/base/App';
+import Config from '../../src/base/Config';
 import idle from '../../src/util/idle';
 
 const localhost = '127.0.0.1';

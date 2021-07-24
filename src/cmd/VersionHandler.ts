@@ -3,8 +3,8 @@ import {
 	User,
 } from '@karuta/core';
 
-import Action from '../core/Action';
-import { pkg } from '../core/Package';
+import Action from '../base/Action';
+import { pkg } from '../base/Package';
 
 export default class VersionHandler extends Action {
 	constructor(user: User) {

@@ -5,8 +5,8 @@ import {
 	Context,
 } from '@karuta/core';
 
-import Config from '../../src/core/Config';
-import App from '../../src/core/App';
+import Config from '../../src/base/Config';
+import App from '../../src/base/App';
 
 const port = 10000 + Math.floor(Math.random() * 55536);
 const config = new Config();
