@@ -10,7 +10,7 @@ export default class UserSessionHandler extends Action {
 		super(Context.UserSession, user);
 	}
 
-	post(credential: unknown): unknown {
+	post(credential: unknown): number {
 		if (typeof credential === 'object') {
 			const { name } = credential as Record<string, string>;
 			this.user.setName(name);

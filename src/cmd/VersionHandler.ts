@@ -11,7 +11,7 @@ export default class VersionHandler extends Action {
 		super(Context.Version, user);
 	}
 
-	get(): Promise<unknown> {
+	get(): Promise<string> {
 		return pkg.readVersion();
 	}
 }
