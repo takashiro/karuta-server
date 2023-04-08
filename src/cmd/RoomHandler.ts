@@ -21,10 +21,6 @@ export default class RoomHandler extends Action {
 
 	put(): number {
 		const lobby = this.getLobby();
-		if (!lobby) {
-			return 0;
-		}
-
 		const user = this.getUser();
 		const room = new GameRoom(user);
 		lobby.addRoom(room);
@@ -74,10 +70,6 @@ export default class RoomHandler extends Action {
 		}
 
 		const lobby = this.getLobby();
-		if (!lobby) {
-			return;
-		}
-
 		const { id } = params as QueryParams;
 		return id ? lobby.findRoom(id) : undefined;
 	}

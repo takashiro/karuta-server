@@ -2,6 +2,7 @@ import {
 	Method,
 	Context,
 	Connection,
+	Driver,
 } from '@karuta/core';
 
 import Lobby from '../../src/base/Lobby';
@@ -84,7 +85,7 @@ describe('Driver', () => {
 	});
 
 	it('can handle drivers with 0 listener', () => {
-		const driver = room.getDriver();
+		const driver = room.getDriver() as Driver<unknown>;
 		const createContextListeners = jest.spyOn(driver, 'createContextListeners');
 		createContextListeners.mockReturnValueOnce(undefined);
 		const socket = {} as unknown as Connection;

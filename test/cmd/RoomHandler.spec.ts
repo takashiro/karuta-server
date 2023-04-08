@@ -11,27 +11,8 @@ const room = {
 } as unknown as Room;
 const user = {} as unknown as User;
 const handler = new RoomHandler(user);
-const getLobby = jest.spyOn(handler, 'getLobby');
 const getRoom = jest.spyOn(handler, 'getRoom').mockReturnValue(room);
 getOwner.mockReturnValue(user);
-
-it('cannot create a room without a lobby', () => {
-	getLobby.mockReturnValueOnce(undefined);
-	const res = handler.put();
-	expect(res).toBe(0);
-});
-
-it('returns nothing without a lobby', () => {
-	getLobby.mockReturnValueOnce(undefined);
-	const res = handler.get({ id: 1 });
-	expect(res).toBe(undefined);
-});
-
-it('cannot enter any room without a lobby', () => {
-	getLobby.mockReturnValueOnce(undefined);
-	const res = handler.post({ id: 1 });
-	expect(res).toBe(undefined);
-});
 
 it('shows no configuration in the lobby', () => {
 	getRoom.mockReturnValueOnce(undefined);

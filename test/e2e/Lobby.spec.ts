@@ -13,6 +13,8 @@ import {
 import App from '../../src/base/App';
 import Config from '../../src/base/Config';
 import idle from '../../src/util/idle';
+import User from '../../src/base/User';
+import Room from '../../src/base/Room';
 
 const localhost = '127.0.0.1';
 
@@ -98,8 +100,8 @@ it('unicast a command', async () => {
 		});
 	});
 	const room = lobby.findRoom(roomId);
-	const serverUser = room.findUser(user1Id);
-	serverUser.notify(Method.Post, Context.Message, text);
+	const serverUser = room?.findUser(user1Id);
+	serverUser?.notify(Method.Post, Context.Message, text);
 	const message = await reply;
 	expect(message).toBe(text);
 });
@@ -121,10 +123,10 @@ it('broadcasts a command', async () => {
 
 	const room = lobby.findRoom(roomId);
 	expect(room).toBeTruthy();
-	const users = room.getUsers();
+	const users = room?.getUsers();
 	expect(users).toHaveLength(2);
 
-	room.broadcast(Method.Put, Context.Users, key);
+	room?.broadcast(Method.Put, Context.Users, key);
 
 	const users1 = await reply1;
 	const users2 = await reply2;
@@ -166,7 +168,7 @@ it('can see room configuration from the lobby', async () => {
 });
 
 it('cannot modify room configuration without owner privilege', async () => {
-	const room = lobby.findRoom(roomId);
+	const room = lobby.findRoom(roomId) as Room;
 	const updateConfig = jest.spyOn(room, 'updateConfig');
 	await user2.patch(Context.Room, { a: 1 });
 	expect(updateConfig).not.toBeCalled();
@@ -194,11 +196,12 @@ it('can see users in the same room', async () => {
 });
 
 it('logs out', async () => {
-	expect(lobby.findUser(user2Id)).toBeTruthy();
+	expect(lobby.findUser(user2Id)).toBeInstanceOf(User);
 	await user2.delete(Context.UserSession);
 	await idle(0);
 	await user2.close();
-	expect(lobby.findUser(user2Id)).toBeFalsy();
+	await idle(0);
+	expect(lobby.findUser(user2Id)).toBeUndefined();
 });
 
 it('should stop the app', async () => {

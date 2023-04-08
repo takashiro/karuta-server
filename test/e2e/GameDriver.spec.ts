@@ -55,7 +55,7 @@ it('gets driver configuration', async () => {
 
 it('loads a driver', () => {
 	const room = lobby.findRoom(roomId);
-	const succeeded = room.loadDriver(path.join(__dirname, '..', 'sample'));
+	const succeeded = room?.loadDriver(path.join(__dirname, '..', 'sample'));
 	expect(succeeded).toBe(true);
 });
 
