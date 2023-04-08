@@ -10,9 +10,12 @@ module.exports = {
 		'!./src/*.ts',
 	],
 	coverageDirectory: 'build',
-	globals: {
-		'ts-jest': {
-			tsconfig: 'test/tsconfig.json',
-		},
+	transform: {
+		'^.+\\.ts$': [
+			'ts-jest',
+			{
+				tsconfig: 'test/tsconfig.json',
+			},
+		],
 	},
 };
