@@ -84,7 +84,7 @@ it('does not send anything if disconnected', () => {
 	user.post(4);
 	user.delete(5);
 	user.head(6);
-	user.request(7, 8, 9);
+	user.request(1, 8, 9);
 	expect(notify).not.toBeCalled();
 
 	user.setRequestTimeout(100);
@@ -128,8 +128,8 @@ it('can put something', async () => {
 });
 
 it('can request something', async () => {
-	await user.request(7, 8, 9);
-	expect(request).toBeCalledWith(7, 8, 9);
+	await user.request(1, 8, 9);
+	expect(request).toBeCalledWith(1, 8, 9);
 });
 
 it('can configure request timeout', () => {

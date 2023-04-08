@@ -56,7 +56,7 @@ export default class DriverHandler extends Action {
 		if (!driver) {
 			return false;
 		}
-		driver.updateConfig(params);
+		driver.updateConfig(params as Partial<unknown>);
 		room.broadcast(Method.Patch, Context.Driver, driver.getConfig());
 		return true;
 	}
